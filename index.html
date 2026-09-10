@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HCM101 - 3D Flipbook Tư tưởng Hồ Chí Minh</title>
+    <style>
+        /* --- GIAO DIỆN WEB APP --- */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #2c3e50;
+            background-image: radial-gradient(circle, #34495e, #1a252f);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .topbar {
+            background-color: rgba(255, 255, 255, 0.95);
+            height: 60px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 100;
+        }
+
+        .topbar-left, .topbar-right { display: flex; align-items: center; gap: 15px; }
+
+        .btn-outline {
+            border: 1px solid #ccc; background: #fff; padding: 8px 15px;
+            border-radius: 20px; cursor: pointer; font-weight: 600; color: #333; transition: 0.3s;
+        }
+        .btn-outline:hover { background: #e0e0e0; }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #d32f2f, #b71c1c); color: #fff;
+            border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 600;
+            box-shadow: 0 4px 6px rgba(183, 28, 28, 0.4);
+        }
+
+        .title-area h2 { margin: 0; font-size: 16px; color: #b71c1c; }
+        .title-area p { margin: 0; font-size: 12px; color: #555; }
+
+        /* --- KHUNG CHỨA SÁCH --- */
+        .main-workspace {
+            flex: 1; display: flex; justify-content: center; align-items: center; position: relative;
+        }
+
+        #flipbook-container { width: 900px; height: 600px; }
+
+        /* --- CSS CHO TRANG SÁCH --- */
+        .page {
+            background-color: #fdfaf0;
+            border: 1px solid #d4c5b0;
+            box-shadow: inset 0 0 30px rgba(139, 69, 19, 0.1);
+            box-sizing: border-box;
+            overflow: hidden;
+            position: relative;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .page-content { padding: 40px; height: 100%; box-sizing: border-box; display: flex; flex-direction: column;}
+
+        /* Bìa sách */
+        .page-cover {
+            background: linear-gradient(135deg, #8e0000, #5c0000);
+            color: #ffd700; border: 2px solid #ffd700;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+        }
+        .page-cover h1 { font-size: 30px; margin-bottom: 15px; line-height: 1.4; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .page-cover h3 { font-size: 14px; letter-spacing: 2px; color: #ffeb3b; }
+        .page-cover .badge { border: 1px solid #ffd700; padding: 5px 20px; border-radius: 20px; font-weight: bold; margin-top: 30px; letter-spacing: 1px;}
+
+        /* Nội dung */
+        .page h2 { color: #8e0000; border-bottom: 2px solid #8e0000; padding-bottom: 10px; font-size: 22px; margin-top: 0;}
+        .page p, .page li { font-size: 16px; line-height: 1.6; text-align: justify; color: #222; }
+        .page ul { padding-left: 20px; }
+        .page li { margin-bottom: 8px; }
+        .page-number { position: absolute; bottom: 15px; width: 100%; text-align: center; font-size: 14px; color: #888; left: 0; font-style: italic;}
+
+        /* Xử lý ảnh trong sách */
+        .page-img-full { width: 100%; height: 220px; object-fit: cover; border: 3px solid #8e0000; border-radius: 5px; margin-bottom: 15px; filter: sepia(0.3) contrast(1.1); }
+        .page-img-float { width: 150px; float: right; margin: 0 0 10px 15px; border: 2px solid #555; border-radius: 4px; filter: grayscale(20%); }
+
+        /* --- CHAT AI WIDGET --- */
+        .ai-chat-btn {
+            position: fixed; bottom: 30px; right: 30px; background-color: #d32f2f; color: white;
+            width: 65px; height: 65px; border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            font-size: 28px; cursor: pointer; box-shadow: 0 5px 15px rgba(211, 47, 47, 0.4); z-index: 999; transition: 0.3s;
+        }
+        .ai-chat-btn:hover { transform: scale(1.1) rotate(5deg); }
+        .ai-chat-window {
+            position: fixed; bottom: 110px; right: 30px; width: 350px; height: 450px; background: #fff;
+            border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: none; flex-direction: column; overflow: hidden; z-index: 999;
+        }
+        .chat-header { background: linear-gradient(135deg, #d32f2f, #b71c1c); color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; }
+        .chat-body { flex: 1; padding: 15px; background: #f9f9f9; overflow-y: auto; font-size: 14px;}
+        .chat-input { display: flex; padding: 10px; border-top: 1px solid #eee; }
+        .chat-input input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
+        .chat-input button { background: none; border: none; color: #d32f2f; font-weight: bold; cursor: pointer; padding: 0 15px; }
+        .ai-msg { background: #ffebee; color: #b71c1c; padding: 10px; border-radius: 10px; margin-bottom: 10px; display: inline-block; line-height: 1.4;}
+    </style>
+</head>
+<body>
+
+    <!-- Header Web App -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <button class="btn-outline">☰ Mục lục</button>
+            <div class="title-area">
+                <h2>HCM101 Interactive Flipbook</h2>
+                <p>Môn học: Tư tưởng Hồ Chí Minh</p>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <button class="btn-outline" id="btn-prev">❮ Lật về trước</button>
+            <button class="btn-primary">📖 Đọc tự động: TẮT</button>
+            <button class="btn-outline" id="btn-next">Lật sang sau ❯</button>
+        </div>
+    </div>
+
+    <!-- Khu vực hiển thị sách -->
+    <div class="main-workspace">
+        <div id="flipbook-container">
+            
+            <!-- BÌA TRƯỚC -->
+            <div class="page page-cover">
+                <div class="page-content" style="justify-content: center; align-items: center;">
+                    <h3>DỰ ÁN HỌC TẬP</h3>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Flag_of_the_Communist_Party_of_Vietnam.svg/320px-Flag_of_the_Communist_Party_of_Vietnam.svg.png" style="width: 100px; margin: 20px 0;">
+                    <h1>BẢN ĐỒ HÌNH THÀNH<br>TƯ TƯỞNG HỒ CHÍ MINH</h1>
+                    <div class="badge">PHIÊN BẢN 3D TƯƠNG TÁC</div>
+                </div>
+            </div>
+
+            <!-- MẶT SAU BÌA (Trang lót) -->
+            <div class="page">
+                <div class="page-content" style="display: flex; justify-content: center; align-items: center; opacity: 0.1;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Flag_of_the_Communist_Party_of_Vietnam.svg/320px-Flag_of_the_Communist_Party_of_Vietnam.svg.png" width="200">
+                </div>
+            </div>
+
+            <!-- TRANG 1 -->
+            <div class="page">
+                <div class="page-content">
+                    <h2>1. Khởi nguồn (Trước 1911)</h2>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Lotus_flower_in_the_pond.jpg/800px-Lotus_flower_in_the_pond.jpg" class="page-img-full" alt="Quê hương">
+                    <p><strong>Hình thành tư tưởng yêu nước:</strong></p>
+                    <ul>
+                        <li>Tiếp thu truyền thống yêu nước bất khuất từ quê hương Nghệ An và gia đình.</li>
+                        <li>Chứng kiến nỗi khổ của nhân dân dưới ách thực dân.</li>
+                        <li>Sớm nhận ra hạn chế trong con đường cứu nước của các sĩ phu đi trước.</li>
+                    </ul>
+                </div>
+                <div class="page-number">Trang 1</div>
+            </div>
+
+            <!-- TRANG 2 -->
+            <div class="page">
+                <div class="page-content">
+                    <h2>2. Khám phá (1911 - 1920)</h2>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Messageries_Maritimes_Saigon.jpg/800px-Messageries_Maritimes_Saigon.jpg" class="page-img-float" alt="Bến Nhà Rồng">
+                    <p><strong>Tìm thấy ánh sáng thời đại:</strong></p>
+                    <ul>
+                        <li><strong>1911:</strong> Rời bến Nhà Rồng trên con tàu Amiral Latouche-Tréville để đi sang phương Tây.</li>
+                        <li>Khảo sát thực tiễn phong trào công nhân qua nhiều châu lục.</li>
+                        <li><strong>Tháng 7/1920:</strong> Đọc <em>Sơ thảo lần thứ nhất những luận cương về vấn đề dân tộc và vấn đề thuộc địa</em> của V.I.Lênin, tìm thấy con đường cách mạng vô sản.</li>
+                    </ul>
+                </div>
+                <div class="page-number">Trang 2</div>
+            </div>
+
+            <!-- TRANG 3 -->
+            <div class="page">
+                <div class="page-content">
+                    <h2>3. Định hình (1921 - 1930)</h2>
+                    <p><strong>Hình thành cơ bản Tư tưởng Hồ Chí Minh:</strong></p>
+                    <ul>
+                        <li>Truyền bá chủ nghĩa Mác - Lênin về nước qua báo chí.</li>
+                        <li><strong>1927:</strong> Xuất bản cuốn <strong>Đường Kách mệnh</strong> chuẩn bị nền tảng lý luận.</li>
+                        <li><strong>Đầu năm 1930:</strong> Chủ trì Hội nghị hợp nhất, thành lập Đảng Cộng sản Việt Nam và thông qua Cương lĩnh chính trị đầu tiên.</li>
+                    </ul>
+                </div>
+                <div class="page-number">Trang 3</div>
+            </div>
+
+            <!-- TRANG 4 -->
+            <div class="page">
+                <div class="page-content">
+                    <h2>4. Thử thách (1930 - 1945)</h2>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Ho_Chi_Minh_1946.jpg/800px-Ho_Chi_Minh_1946.jpg" class="page-img-full" style="height: 180px; object-position: top;" alt="Bác Hồ">
+                    <ul>
+                        <li>Kiên định giữ vững lập trường giải phóng dân tộc trước các quan điểm tả khuynh.</li>
+                        <li><strong>1941:</strong> Trở về nước trực tiếp lãnh đạo, đặt nhiệm vụ giải phóng dân tộc lên hàng đầu.</li>
+                        <li><strong>1945:</strong> Lãnh đạo Cách mạng Tháng Tám thành công, khai sinh nước Việt Nam Dân chủ Cộng hòa.</li>
+                    </ul>
+                </div>
+                <div class="page-number">Trang 4</div>
+            </div>
+
+            <!-- TRANG 5 -->
+            <div class="page">
+                <div class="page-content">
+                    <h2>5. Hoàn thiện (1945 - 1969)</h2>
+                    <p><strong>Tiếp tục phát triển tư tưởng:</strong></p>
+                    <ul>
+                        <li>Bổ sung lý luận chiến tranh nhân dân trong kháng chiến chống Pháp và chống Mỹ.</li>
+                        <li>Phát triển tư tưởng xây dựng Chủ nghĩa Xã hội ở miền Bắc.</li>
+                        <li>Hoàn thiện lý luận về xây dựng Nhà nước của dân, do dân, vì dân.</li>
+                    </ul>
+                </div>
+                <div class="page-number">Trang 5</div>
+            </div>
+            
+            <!-- TRANG 6 -->
+            <div class="page">
+                <div class="page-content" style="text-align: center; justify-content: center;">
+                    <h2 style="border: none;">THÔNG TIN THỰC HIỆN</h2>
+                    <div style="background: #fff; padding: 20px; border-radius: 10px; border: 1px dashed #b71c1c;">
+                        <p style="text-align: center; font-size: 18px; margin-bottom: 5px;"><strong>Sinh viên thực hiện:</strong> HauPT</p>
+                        <p style="text-align: center; color: #555; margin-top: 0;">Trường Đại học FPT</p>
+                        <p style="text-align: center; font-size: 14px; color: #888;">Môn học: Tư tưởng Hồ Chí Minh (HCM101)</p>
+                    </div>
+                </div>
+                <div class="page-number">Trang 6</div>
+            </div>
+
+            <!-- BÌA SAU -->
+            <div class="page page-cover">
+                <div class="page-content" style="justify-content: center;">
+                    <h2>HẾT</h2>
+                    <p style="color: #ffd700; padding: 20px; border-top: 1px solid #ffd700; margin-top: 20px;">Tư tưởng Hồ Chí Minh là tài sản tinh thần vô giá, ngọn đuốc soi đường cho cách mạng Việt Nam.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- AI Chat Widget -->
+    <div class="ai-chat-btn" onclick="toggleChat()" title="Chat với AI Tutor">🤖</div>
+    
+    <div class="ai-chat-window" id="chatWindow">
+        <div class="chat-header">
+            <span>AI Tutor Môn HCM101</span>
+            <span style="cursor:pointer; padding: 0 5px;" onclick="toggleChat()">✖</span>
+        </div>
+        <div class="chat-body">
+            <div class="ai-msg">Chào bạn! Mình là trợ giảng AI. Bạn cần tôi hỗ trợ giải đáp hay tóm tắt nội dung nào không?</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" placeholder="Nhập câu hỏi...">
+            <button>Gửi</button>
+        </div>
+    </div>
+
+    <!-- Thư viện StPageFlip -->
+    <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.js"></script>
+    
+    <script>
+        const flipbookEl = document.getElementById('flipbook-container');
+        const pageFlip = new St.PageFlip(flipbookEl, {
+            width: 450, height: 600, size: "fixed",
+            minWidth: 450, maxWidth: 450, minHeight: 600, maxHeight: 600,
+            showCover: true, drawShadow: true, usePortrait: false,
+        });
+
+        pageFlip.loadFromHTML(document.querySelectorAll('.page'));
+
+        document.getElementById('btn-prev').addEventListener('click', () => { pageFlip.flipPrev(); });
+        document.getElementById('btn-next').addEventListener('click', () => { pageFlip.flipNext(); });
+
+        function toggleChat() {
+            const chatWindow = document.getElementById('chatWindow');
+            chatWindow.style.display = (chatWindow.style.display === "flex") ? "none" : "flex";
+        }
+    </script>
+</body>
+</html>
