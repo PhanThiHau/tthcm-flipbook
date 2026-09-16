@@ -1,283 +1,1973 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HCM101 - 3D Flipbook Tư tưởng Hồ Chí Minh</title>
-    <style>
-        /* --- GIAO DIỆN WEB APP --- */
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #2c3e50;
-            background-image: radial-gradient(circle, #34495e, #1a252f);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HCM202 3D Flipbook - Bản Đồ Hình Thành Tư Tưởng Hồ Chí Minh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Playfair+Display:ital,wght@0,600;0,800;1,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary-red: #8b1512;
+    --primary-red-hover: #6e0d0b;
+    --primary-red-light: #fbeeed;
+    --gold-accent: #c69214;
+    --gold-bright: #d4af37;
+    --accent-orange: #d9531e;
+    --accent-yellow: #f59e0b;
+    --text-dark: #2b1f1d;
+    --book-w: 840px;
+    --book-h: 570px;
+  }
 
-        .topbar {
-            background-color: rgba(255, 255, 255, 0.95);
-            height: 60px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.3);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            z-index: 100;
-        }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-user-select: none;
+    user-select: none;
+  }
 
-        .topbar-left, .topbar-right { display: flex; align-items: center; gap: 15px; }
+  body {
+    font-family: 'Inter', sans-serif;
+    color: var(--text-dark);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: radial-gradient(circle at 50% 40%, #fffbf8 0%, #f7ede5 50%, #ecdacf 100%);
+    position: relative;
+    touch-action: none;
+  }
 
-        .btn-outline {
-            border: 1px solid #ccc; background: #fff; padding: 8px 15px;
-            border-radius: 20px; cursor: pointer; font-weight: 600; color: #333; transition: 0.3s;
-        }
-        .btn-outline:hover { background: #e0e0e0; }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #d32f2f, #b71c1c); color: #fff;
-            border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 600;
-            box-shadow: 0 4px 6px rgba(183, 28, 28, 0.4);
-        }
+  .bg-decor {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .bg-decor .temple-decor {
+    position: absolute;
+    left: -20px;
+    top: 25%;
+    width: 360px;
+    height: 380px;
+    opacity: 0.16;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 350' fill='none' stroke='%238b1512' stroke-width='2'%3E%3Cpolygon points='200,20 20,90 380,90' fill='%238b1512' fill-opacity='0.05'/%3E%3Crect x='30' y='90' width='340' height='20'/%3E%3Crect x='50' y='110' width='25' height='180'/%3E%3Crect x='110' y='110' width='25' height='180'/%3E%3Crect x='170' y='110' width='25' height='180'/%3E%3Crect x='230' y='110' width='25' height='180'/%3E%3Crect x='290' y='110' width='25' height='180'/%3E%3Crect x='350' y='110' width='25' height='180'/%3E%3Crect x='20' y='290' width='360' height='30'/%3E%3C/svg%3E") no-repeat center center;
+    background-size: contain;
+  }
+  .bg-decor .skyline-decor {
+    position: absolute;
+    right: 0;
+    bottom: 40px;
+    width: 380px;
+    height: 420px;
+    opacity: 0.15;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 350 400' fill='%238b1512'%3E%3Crect x='30' y='180' width='40' height='220'/%3E%3Cpolygon points='50,130 30,180 70,180'/%3E%3Crect x='85' y='120' width='55' height='280'/%3E%3Crect x='155' y='80' width='60' height='320'/%3E%3Cpolygon points='185,20 175,80 195,80'/%3E%3Crect x='230' y='160' width='45' height='240'/%3E%3Crect x='290' y='210' width='50' height='190'/%3E%3C/svg%3E") no-repeat bottom right;
+    background-size: contain;
+  }
+  .bg-decor .bokeh {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      radial-gradient(circle, rgba(212, 175, 55, 0.45) 2px, transparent 3px),
+      radial-gradient(circle, rgba(255, 255, 255, 0.85) 3.5px, transparent 4.5px),
+      radial-gradient(circle, rgba(139, 21, 18, 0.2) 2px, transparent 3px);
+    background-size: 130px 130px, 190px 190px, 100px 100px;
+    background-position: 15px 25px, 90px 110px, 45px 85px;
+  }
 
-        .title-area h2 { margin: 0; font-size: 16px; color: #b71c1c; }
-        .title-area p { margin: 0; font-size: 12px; color: #555; }
+  /* TOP NAVBAR */
+  header.top-navbar {
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 24px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(139, 21, 18, 0.12);
+    box-shadow: 0 4px 15px rgba(139, 21, 18, 0.04);
+  }
+  .nav-left { display: flex; align-items: center; gap: 14px; }
+  .btn-toc {
+    display: flex; align-items: center; gap: 8px;
+    background: #fdf2f1; color: var(--primary-red);
+    border: 1px solid #f8cfcc; padding: 7px 16px; border-radius: 8px;
+    font-weight: 600; font-size: 13.5px; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-toc:hover { background: #fae4e2; transform: translateY(-1px); }
 
-        /* --- KHUNG CHỨA SÁCH --- */
-        .main-workspace {
-            flex: 1; display: flex; justify-content: center; align-items: center; position: relative;
-        }
+  .book-meta { display: flex; align-items: center; gap: 10px; }
+  .book-icon-badge {
+    width: 34px; height: 34px; border-radius: 8px; border: 1px solid #ebd7cc;
+    background: #fff; display: flex; align-items: center; justify-content: center;
+    font-size: 17px; box-shadow: 0 2px 6px rgba(139, 21, 18, 0.08);
+  }
+  .book-title-wrap h1 {
+    font-size: 14.5px; font-weight: 700; color: #3b0907; display: flex; align-items: center; gap: 8px;
+  }
+  .audio-tag {
+    font-size: 10.5px; padding: 2px 8px; background: #fef3c7; color: #92400e;
+    border-radius: 20px; font-weight: 700; border: 1px solid #fde68a;
+  }
+  .book-subtitle { font-size: 12px; color: #785a53; margin-top: 2px; }
 
-        #flipbook-container { width: 900px; height: 600px; }
+  .nav-right { display: flex; align-items: center; gap: 10px; }
+  .nav-btn {
+    border-radius: 20px; padding: 7px 16px; font-size: 12.5px; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s;
+  }
+  .btn-tts { background: #fff; border: 1px solid #e2d1c6; color: #4a2f2b; }
+  .btn-tts:hover { background: #fdfaf8; border-color: var(--primary-red); }
+  .btn-autoturn {
+    background: linear-gradient(135deg, #d9531e, #b83d10); color: #fff; border: none;
+    box-shadow: 0 2px 8px rgba(217, 83, 30, 0.35);
+  }
+  .btn-bookmark {
+    background: linear-gradient(135deg, #d4af37, #b8860b); color: #2b1805;
+    border: none; font-weight: 700; box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4);
+  }
+  .icon-tool-btn {
+    width: 34px; height: 34px; border-radius: 50%; border: 1px solid #ebd7cc;
+    background: #fff; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #5c3e38; transition: all 0.2s;
+  }
+  .icon-tool-btn:hover { background: #fdf6f2; border-color: var(--primary-red); }
 
-        /* --- CSS CHO TRANG SÁCH --- */
-        .page {
-            background-color: #fdfaf0;
-            border: 1px solid #d4c5b0;
-            box-shadow: inset 0 0 30px rgba(139, 69, 19, 0.1);
-            box-sizing: border-box;
-            overflow: hidden;
-            position: relative;
-            font-family: 'Times New Roman', Times, serif;
-        }
+  /* BOOK STAGE */
+  .stage-container {
+    position: relative;
+    z-index: 10;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 2500px;
+  }
+  .book-viewport {
+    position: relative;
+    width: var(--book-w);
+    height: var(--book-h);
+    perspective: 2500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-style: preserve-3d;
+    transition: transform 0.15s ease-out;
+  }
+  .book-viewport::before {
+    content: '';
+    position: absolute;
+    bottom: -32px;
+    width: 92%;
+    height: 58px;
+    background: radial-gradient(ellipse at center, rgba(30, 8, 5, 0.55) 0%, rgba(30, 8, 5, 0.22) 55%, transparent 78%);
+    filter: blur(14px);
+    z-index: 1;
+    transition: transform 0.85s cubic-bezier(0.25, 1, 0.35, 1), left 0.85s ease;
+  }
+  .book {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.85s cubic-bezier(0.25, 1, 0.35, 1);
+    border-radius: 6px;
+    z-index: 5;
+  }
 
-        .page-content { padding: 40px; height: 100%; box-sizing: border-box; display: flex; flex-direction: column;}
+  .book-block-edge-right {
+    position: absolute; top: 5px; bottom: 5px; right: -10px; width: 10px;
+    background: repeating-linear-gradient(to right, #f4ecd8 0px, #e8dbc0 2px, #f4ecd8 3px);
+    border-radius: 0 4px 4px 0;
+    box-shadow: 2px 0 6px rgba(0,0,0,0.2), inset -1px 0 2px rgba(0,0,0,0.15);
+    z-index: 2; transform: rotateY(90deg) translateZ(-5px); transform-origin: left;
+  }
+  .book-block-edge-left {
+    position: absolute; top: 5px; bottom: 5px; left: -10px; width: 10px;
+    background: repeating-linear-gradient(to left, #f4ecd8 0px, #e8dbc0 2px, #f4ecd8 3px);
+    border-radius: 4px 0 0 4px;
+    box-shadow: -2px 0 6px rgba(0,0,0,0.2), inset 1px 0 2px rgba(0,0,0,0.15);
+    z-index: 2; transform: rotateY(-90deg) translateZ(-5px); transform-origin: right;
+    display: none;
+  }
+  .book-block-edge-bottom {
+    position: absolute; left: 10px; right: 10px; bottom: -8px; height: 8px;
+    background: repeating-linear-gradient(to bottom, #ebdcc2 0px, #dfcaa8 2px, #ebdcc2 3px);
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+    z-index: 2; transform: rotateX(90deg) translateZ(-4px); transform-origin: top;
+  }
 
-        /* Bìa sách */
-        .page-cover {
-            background: linear-gradient(135deg, #8e0000, #5c0000);
-            color: #ffd700; border: 2px solid #ffd700;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
-        }
-        .page-cover h1 { font-size: 30px; margin-bottom: 15px; line-height: 1.4; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
-        .page-cover h3 { font-size: 14px; letter-spacing: 2px; color: #ffeb3b; }
-        .page-cover .badge { border: 1px solid #ffd700; padding: 5px 20px; border-radius: 20px; font-weight: bold; margin-top: 30px; letter-spacing: 1px;}
+  .book.closed-start { transform: translateX(-25%); }
+  .book.opened { transform: translateX(0%); }
+  .book.closed-end { transform: translateX(25%); }
+  .book.closed-end .book-block-edge-right { display: none; }
+  .book.closed-end .book-block-edge-left { display: block; }
+  .book.closed-end::after, .book.closed-start::after { opacity: 0; }
 
-        /* Nội dung */
-        .page h2 { color: #8e0000; border-bottom: 2px solid #8e0000; padding-bottom: 10px; font-size: 22px; margin-top: 0;}
-        .page p, .page li { font-size: 16px; line-height: 1.6; text-align: justify; color: #222; }
-        .page ul { padding-left: 20px; }
-        .page li { margin-bottom: 8px; }
-        .page-number { position: absolute; bottom: 15px; width: 100%; text-align: center; font-size: 14px; color: #888; left: 0; font-style: italic;}
+  .book::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0; left: 50%; width: 32px;
+    transform: translateX(-50%);
+    background: linear-gradient(to right, 
+      rgba(0,0,0,0.28) 0%, 
+      rgba(0,0,0,0.05) 30%, 
+      rgba(0,0,0,0.45) 50%, 
+      rgba(0,0,0,0.05) 70%, 
+      rgba(0,0,0,0.28) 100%);
+    z-index: 50;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
 
-        /* Xử lý ảnh trong sách */
-        .page-img-full { width: 100%; height: 220px; object-fit: cover; border: 3px solid #8e0000; border-radius: 5px; margin-bottom: 15px; filter: sepia(0.3) contrast(1.1); }
-        .page-img-float { width: 150px; float: right; margin: 0 0 10px 15px; border: 2px solid #555; border-radius: 4px; filter: grayscale(20%); }
+  .book-ribbon {
+    position: absolute;
+    top: -14px; width: 24px; height: 44px;
+    background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+    z-index: 80;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+    transition: left 0.7s cubic-bezier(0.25, 1, 0.35, 1), transform 0.2s;
+    cursor: pointer; left: 75%; transform: translateX(-50%);
+  }
+  .book-ribbon:hover { transform: translateX(-50%) translateY(3px); }
 
-        /* --- CHAT AI WIDGET --- */
-        .ai-chat-btn {
-            position: fixed; bottom: 30px; right: 30px; background-color: #d32f2f; color: white;
-            width: 65px; height: 65px; border-radius: 50%; display: flex; justify-content: center; align-items: center;
-            font-size: 28px; cursor: pointer; box-shadow: 0 5px 15px rgba(211, 47, 47, 0.4); z-index: 999; transition: 0.3s;
-        }
-        .ai-chat-btn:hover { transform: scale(1.1) rotate(5deg); }
-        .ai-chat-window {
-            position: fixed; bottom: 110px; right: 30px; width: 350px; height: 450px; background: #fff;
-            border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: none; flex-direction: column; overflow: hidden; z-index: 999;
-        }
-        .chat-header { background: linear-gradient(135deg, #d32f2f, #b71c1c); color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; }
-        .chat-body { flex: 1; padding: 15px; background: #f9f9f9; overflow-y: auto; font-size: 14px;}
-        .chat-input { display: flex; padding: 10px; border-top: 1px solid #eee; }
-        .chat-input input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
-        .chat-input button { background: none; border: none; color: #d32f2f; font-weight: bold; cursor: pointer; padding: 0 15px; }
-        .ai-msg { background: #ffebee; color: #b71c1c; padding: 10px; border-radius: 10px; margin-bottom: 10px; display: inline-block; line-height: 1.4;}
-    </style>
+  .sheet {
+    position: absolute;
+    top: 0; right: 0; width: 50%; height: 100%;
+    transform-origin: left center;
+    transform-style: preserve-3d;
+    transition: transform 0.85s cubic-bezier(0.25, 1, 0.35, 1);
+  }
+  .sheet.dragging { transition: none !important; }
+  .sheet.flipped { transform: rotateY(-180deg); }
+
+  /* BỐ CỤC TRANG */
+  .page {
+    position: absolute;
+    width: 100%; height: 100%; top: 0; left: 0;
+    background-color: #faf6ed;
+    background-image: 
+      radial-gradient(#e5d8be 5%, transparent 6%),
+      linear-gradient(to right, rgba(0,0,0,0.07) 0%, transparent 8%, transparent 92%, rgba(0,0,0,0.04) 100%);
+    background-size: 24px 24px, 100% 100%;
+    padding: 20px 24px 14px 24px;
+    overflow: hidden !important;
+    backface-visibility: hidden;
+    border-radius: 2px 8px 8px 2px;
+    box-shadow: inset 0 0 45px rgba(184, 150, 107, 0.25);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-family: 'Merriweather', serif;
+  }
+  .page.front { z-index: 2; transform: rotateY(0deg); }
+  .page.back {
+    transform: rotateY(180deg);
+    border-radius: 8px 2px 2px 8px;
+    background-image: 
+      radial-gradient(#e5d8be 5%, transparent 6%),
+      linear-gradient(to left, rgba(0,0,0,0.07) 0%, transparent 8%, transparent 92%, rgba(0,0,0,0.04) 100%);
+  }
+
+  /* BÌA TRƯỚC */
+  .cover-front {
+    background: radial-gradient(ellipse at center, #8a1512 0%, #4d0806 80%, #290302 100%) !important;
+    border-top: 6px solid #c89524 !important;
+    border-right: 6px solid #c89524 !important;
+    border-bottom: 6px solid #c89524 !important;
+    border-left: none !important;
+    color: #fff9e6 !important;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+    padding: 24px 20px 24px 68px;
+    box-shadow: inset -5px 0 25px rgba(0,0,0,0.5), inset 0 0 60px rgba(0,0,0,0.8) !important;
+    position: relative;
+  }
+
+  .cover-portrait-bg {
+    position: absolute;
+    inset: 0;
+    left: 45px;
+    background: url("HCM.jpg") no-repeat center 28%;
+    background-size: cover;
+    opacity: 0.16;
+    mix-blend-mode: luminosity;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .cover-portrait-badge {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 3px solid #dfb15b;
+    box-shadow: 0 0 16px rgba(223, 177, 91, 0.7), inset 0 0 8px rgba(0,0,0,0.6);
+    overflow: hidden;
+    margin-bottom: 6px;
+    z-index: 3;
+    background: #3b0907;
+  }
+  .cover-portrait-badge img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+    display: block;
+  }
+
+  .cover-spine {
+    position: absolute; top: 0; left: 0; bottom: 0; width: 45px; 
+    background: linear-gradient(to right, #290302 0%, #4d0806 10%, #b41e19 25%, #780f0c 45%, #290302 85%, #140101 100%);
+    display: flex; align-items: center; justify-content: center; z-index: 5;
+    border-right: 1px solid rgba(0,0,0,0.5);
+    box-shadow: inset 4px 0 8px rgba(0,0,0,0.6);
+  }
+  .cover-spine-text {
+    writing-mode: vertical-rl; transform: rotate(180deg);
+    font-family: 'Cinzel', serif; font-size: 13px; color: #f7d377;
+    letter-spacing: 5px; font-weight: 800; text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
+    white-space: nowrap; text-transform: uppercase;
+  }
+  .cover-front::before {
+    content: ''; position: absolute; top: 0; bottom: 0; left: 45px; width: 8px; 
+    background: linear-gradient(to right, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 30%, rgba(255,255,255,0.15) 50%, rgba(0,0,0,0.4) 70%, rgba(0,0,0,0.85) 100%);
+    box-shadow: inset 2px 0 4px rgba(0,0,0,0.8), inset -2px 0 4px rgba(0,0,0,0.8);
+    pointer-events: none; z-index: 10;
+  }
+  .cover-front::after {
+    content: ''; position: absolute; top: 12px; right: 12px; bottom: 12px; left: 60px; 
+    border: 1.5px solid rgba(212, 175, 55, 0.45); border-radius: 4px; pointer-events: none;
+    z-index: 4;
+  }
+
+  /* BÌA SAU */
+  .cover-back {
+    background: radial-gradient(ellipse at center, #8a1512 0%, #4d0806 80%, #290302 100%) !important;
+    border-top: 6px solid #c89524 !important;
+    border-left: 6px solid #c89524 !important;
+    border-bottom: 6px solid #c89524 !important;
+    border-right: none !important;
+    color: #fff9e6 !important;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+    padding: 30px 75px 30px 24px;
+    box-shadow: inset 5px 0 25px rgba(0,0,0,0.5), inset 0 0 60px rgba(0,0,0,0.8) !important;
+    position: relative;
+  }
+  .cover-spine-back {
+    position: absolute; top: 0; right: 0; bottom: 0; width: 45px;
+    background: linear-gradient(to left, #290302 0%, #4d0806 10%, #b41e19 25%, #780f0c 45%, #290302 85%, #140101 100%);
+    display: flex; align-items: center; justify-content: center; z-index: 5;
+    border-left: 1px solid rgba(0,0,0,0.5); box-shadow: inset -4px 0 8px rgba(0,0,0,0.6);
+  }
+  .cover-back::before {
+    content: ''; position: absolute; top: 0; bottom: 0; right: 45px; width: 8px;
+    background: linear-gradient(to left, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 30%, rgba(255,255,255,0.15) 50%, rgba(0,0,0,0.4) 70%, rgba(0,0,0,0.85) 100%);
+    pointer-events: none; z-index: 10;
+  }
+  .cover-back::after {
+    content: ''; position: absolute; top: 12px; left: 12px; bottom: 12px; right: 65px;
+    border: 1.5px solid rgba(212, 175, 55, 0.45); border-radius: 4px; pointer-events: none;
+  }
+
+  .drag-corner-handle {
+    position: absolute; bottom: 0; width: 100px; height: 100px; z-index: 90; cursor: grab; background: transparent !important;
+  }
+  .drag-corner-handle:active { cursor: grabbing; }
+  .drag-corner-right { right: 0; }
+  .drag-corner-left { left: 0; }
+
+  .cover-badge-top {
+    font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 1.5px; color: #ffd700;
+    border: 1px solid rgba(255, 215, 0, 0.45); padding: 3px 12px; border-radius: 20px;
+    background: rgba(0,0,0,0.3); margin-bottom: 6px; z-index: 3;
+  }
+  .cover-subtitle { font-family: 'Cinzel', serif; font-size: 10.5px; letter-spacing: 2px; color: #f7d377; text-transform: uppercase; margin-bottom: 6px; z-index: 3; }
+  .cover-title {
+    font-size: 19.5px; font-weight: 900; color: #fff2b2; line-height: 1.3;
+    text-shadow: 0 3px 10px rgba(0,0,0,0.8); border-top: 1.5px solid #dfb15b; border-bottom: 1.5px solid #dfb15b;
+    padding: 8px 0; margin-bottom: 10px; width: 92%; z-index: 3;
+  }
+  .cover-quote {
+    font-size: 10.5px; line-height: 1.5; color: #fae7b9; font-style: italic; max-width: 320px;
+    margin-bottom: 10px; background: rgba(0,0,0,0.28); padding: 6px 10px; border-radius: 4px;
+    border: 1px dashed rgba(223, 177, 91, 0.4); z-index: 3;
+  }
+  .cover-footer { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 1.5px; color: #e5b967; z-index: 3; }
+
+  .header-decor { text-align: center; border-bottom: 2px double #c0a16b; padding-bottom: 4px; margin-bottom: 6px; }
+  .meta-tag { font-family: 'Cinzel', serif; font-size: 8.5px; letter-spacing: 1.5px; color: #8b251e; text-transform: uppercase; font-weight: 700; }
+  .page-title { font-family: 'Playfair Display', serif; font-size: 14.5px; color: #6d100b; margin-top: 2px; font-weight: 800; line-height: 1.25; }
+
+  .content-body {
+    flex: 1;
+    font-size: 11px;
+    line-height: 1.48;
+    color: #2e2620;
+    text-align: justify;
+    overflow: hidden !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .section-label {
+    font-size: 11.2px;
+    font-weight: 700;
+    color: #8b1512;
+    margin-top: 3px;
+    margin-bottom: 2px;
+    border-bottom: 1px dashed rgba(139, 21, 18, 0.3);
+    padding-bottom: 1px;
+  }
+
+  /* KHUNG VIDEO IFRAME GOOGLE DRIVE CHUẨN XÁC VÀ SÁNG RÕ */
+  .video-stage-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    padding: 4px 2px;
+  }
+  .video-frame-container {
+    width: 100%;
+    max-width: 360px;
+    height: 220px;
+    aspect-ratio: 16 / 10;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid #dfcaa8;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    background: #000;
+    position: relative;
+    margin: 2px auto;
+  }
+  .video-frame-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
+  /* ROADMAP TIMELINE */
+  .roadmap-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 8px 12px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .roadmap-root-box {
+    border: 2px solid #3366cc;
+    border-radius: 12px;
+    padding: 9px 22px;
+    background: #ffffff;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+    position: relative;
+    z-index: 2;
+    align-self: flex-start;
+    margin-left: 8px;
+    margin-bottom: 4px;
+  }
+  .roadmap-root-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1f2937;
+    line-height: 1.35;
+    text-align: center;
+  }
+
+  .roadmap-tree-body {
+    position: relative;
+    padding-left: 36px;
+    width: 100%;
+    margin-top: 0;
+  }
+
+  .roadmap-tree-body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 26px;
+    left: 23px;
+    width: 3.5px;
+    background: linear-gradient(180deg, #2563eb 0%, #8b5cf6 25%, #ec4899 50%, #f97316 75%, #f59e0b 100%);
+    border-radius: 2px;
+  }
+
+  .roadmap-node {
+    position: relative;
+    margin: 14px 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .roadmap-node::before {
+    content: '';
+    position: absolute;
+    left: -13px;
+    top: 50%;
+    width: 13px;
+    height: 2px;
+    background: currentColor;
+  }
+
+  .roadmap-target-circle {
+    position: absolute;
+    left: -20.5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 2.5px solid currentColor;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+  }
+  .roadmap-target-circle::after {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .roadmap-pill-card {
+    border-radius: 10px;
+    padding: 9px 15px;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.38;
+    letter-spacing: 0.2px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+    width: 100%;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .roadmap-pill-card:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .node-blue { color: #2b70f4; }
+  .node-blue .roadmap-pill-card { background-color: #2b70f4; }
+
+  .node-purple { color: #9078f4; }
+  .node-purple .roadmap-pill-card { background-color: #9078f4; }
+
+  .node-pink { color: #f05c7c; }
+  .node-pink .roadmap-pill-card { background-color: #f05c7c; }
+
+  .node-orange { color: #f75518; }
+  .node-orange .roadmap-pill-card { background-color: #f75518; }
+
+  .node-yellow { color: #f99c15; }
+  .node-yellow .roadmap-pill-card { background-color: #f99c15; }
+
+  .quote-box {
+    background: rgba(139, 0, 0, 0.05);
+    border-left: 3px solid #8b0000;
+    padding: 5px 8px;
+    margin: 5px 0;
+    font-style: italic;
+    font-size: 10.5px;
+    color: #53110e;
+    border-radius: 0 4px 4px 0;
+    line-height: 1.4;
+  }
+  .quote-author {
+    display: block; text-align: right; font-weight: bold; font-size: 9.5px; margin-top: 2px;
+    font-style: normal; color: #8b0000;
+  }
+
+  /* KHUNG ẢNH MINH HỌA CHUNG */
+  .image-frame {
+    margin: 4px 0;
+    border: 1.5px solid #d4c09d;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.14);
+    border-radius: 6px;
+    overflow: hidden;
+    background: #2a221d;
+    display: flex;
+    flex-direction: column;
+  }
+  .image-frame img {
+    width: 100%;
+    height: 135px;
+    object-fit: contain;
+    display: block;
+    background: #231b17;
+  }
+
+  /* KHUNG CHO ẢNH BẢN YÊU SÁCH Ở TRANG 7 (HIỂN THỊ RÕ TOÀN BỘ CHIỀU CAO VĂN BẢN) */
+  .image-frame-tall {
+    margin: 4px 0;
+    border: 1.5px solid #d4c09d;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.14);
+    border-radius: 6px;
+    overflow: hidden;
+    background: #fdfaf6;
+    display: flex;
+    flex-direction: column;
+  }
+  .image-frame-tall img {
+    width: 100%;
+    height: 250px;
+    object-fit: contain;
+    display: block;
+    background: #fdfaf6;
+  }
+
+  .image-caption {
+    font-size: 8.5px; font-style: italic; color: #5a493a; text-align: center;
+    padding: 3px 6px; background: #f0e6d2; border-top: 1px solid #d4c09d;
+  }
+  .page-footer {
+    display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #dfcfb4;
+    padding-top: 4px; margin-top: 4px; font-size: 9px; color: #796654; font-family: 'Cinzel', serif;
+  }
+  .bullet-list { margin-left: 12px; margin-top: 2px; margin-bottom: 2px; }
+  .bullet-list li { margin-bottom: 2px; font-size: 10.5px; line-height: 1.38; }
+
+  .side-nav-btn {
+    position: absolute; top: 50%; transform: translateY(-50%); width: 42px; height: 42px; border-radius: 50%;
+    background: #ffffff; border: 1px solid rgba(139, 21, 18, 0.2); box-shadow: 0 4px 14px rgba(139, 21, 18, 0.12);
+    display: flex; align-items: center; justify-content: center; font-size: 18px; color: #5c3e38; cursor: pointer;
+    z-index: 60; transition: all 0.2s ease;
+  }
+  .side-nav-btn:hover:not(:disabled) {
+    background: #fdf5f4; color: var(--primary-red); transform: translateY(-50%) scale(1.08);
+    box-shadow: 0 6px 18px rgba(139, 21, 18, 0.2);
+  }
+  .side-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .side-nav-btn.prev-btn { left: 35px; }
+  .side-nav-btn.next-btn { right: 35px; }
+
+  /* BOTTOM BAR */
+  footer.bottom-bar {
+    z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 10px 24px;
+    background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-top: 1px solid rgba(139, 21, 18, 0.12);
+    box-shadow: 0 -3px 12px rgba(139, 21, 18, 0.04); font-size: 12.5px;
+  }
+  .bottom-left { display: flex; align-items: center; gap: 10px; }
+  .page-counter-badge {
+    padding: 5px 12px; border-radius: 6px; border: 1px solid #ebd7cc; background: #fff; font-weight: 600; color: #3b0907;
+  }
+  .btn-saved-badge {
+    padding: 5px 10px; border-radius: 6px; background: #fef3c7; color: #92400e; font-weight: 600;
+    border: 1px solid #fde68a; display: flex; align-items: center; gap: 4px; cursor: pointer;
+  }
+  .bottom-center { display: flex; align-items: center; gap: 12px; }
+  .bottom-center span { font-weight: 600; color: #5c3e38; }
+  .slider-quick-turn { width: 220px; accent-color: var(--primary-red); cursor: pointer; }
+
+  .bottom-right { display: flex; align-items: center; gap: 12px; }
+  .swipe-tip { color: #785a53; display: flex; align-items: center; gap: 6px; font-size: 12px; }
+  
+  .ai-mascot-avatar {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--primary-red); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer;
+    box-shadow: 0 2px 8px rgba(139, 21, 18, 0.35); transition: transform 0.2s ease;
+  }
+  .ai-mascot-avatar:hover { transform: scale(1.1); }
+
+  /* SIDEBAR */
+  .sidebar-backdrop {
+    position: fixed; inset: 0; background: rgba(43, 10, 8, 0.4); z-index: 100; display: none; opacity: 0; transition: opacity 0.3s;
+  }
+  .sidebar-backdrop.show { display: block; opacity: 1; }
+  .sidebar-drawer {
+    position: fixed; top: 0; bottom: 0; left: 0; width: 390px; background: #ffffff; z-index: 101;
+    box-shadow: 5px 0 25px rgba(0,0,0,0.18); display: flex; flex-direction: column; transform: translateX(-100%);
+    transition: transform 0.35s cubic-bezier(0.2, 1, 0.3, 1);
+  }
+  .sidebar-drawer.open { transform: translateX(0); }
+  .sidebar-header {
+    padding: 18px 20px; border-bottom: 1px solid #ebd7cc; display: flex; align-items: center; justify-content: space-between; background: #fdfaf8;
+  }
+  .sidebar-title { font-size: 16px; font-weight: 700; color: #3b0907; display: flex; align-items: center; gap: 8px; }
+  .sidebar-close-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: #785a53; padding: 4px; }
+  .sidebar-content { flex: 1; overflow-y: auto; padding: 20px; }
+  .drawer-section-title {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.5px; color: var(--primary-red); margin-bottom: 12px; text-transform: uppercase;
+  }
+  .saved-pages-box { background: #fef3c7; border: 1px solid #fde68a; border-radius: 8px; padding: 12px 14px; margin-bottom: 22px; }
+  .saved-box-header { font-size: 12px; font-weight: 700; color: #92400e; margin-bottom: 8px; }
+  .saved-pill-list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .saved-tag-pill { background: #f59e0b; color: #fff; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; }
+  .chapter-list { display: flex; flex-direction: column; gap: 10px; }
+  .toc-item {
+    display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 10px; background: #fdfaf8;
+    border: 1px solid #ebd7cc; cursor: pointer; font-size: 13px; color: #4a2f2b; font-weight: 600;
+    transition: all 0.2s ease;
+  }
+  .toc-item:hover { background: #fae4e2; border-color: #f8cfcc; color: var(--primary-red); transform: translateX(3px); }
+  .toc-item.active { background: var(--primary-red); color: #ffffff; border-color: var(--primary-red); font-weight: 700; }
+  .toc-item .num-badge {
+    width: 26px; height: 26px; border-radius: 50%; background: #eedbd0; color: #5c3e38; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+  }
+  .toc-item.active .num-badge { background: rgba(255,255,255,0.25); color: #ffffff; }
+  .toc-item .item-text { flex: 1; line-height: 1.35; }
+
+  /* AI CHAT DRAWER */
+  .ai-backdrop { position: fixed; inset: 0; background: rgba(43, 10, 8, 0.35); z-index: 100; display: none; opacity: 0; transition: opacity 0.3s; }
+  .ai-backdrop.show { display: block; opacity: 1; }
+  .ai-drawer {
+    position: fixed; top: 0; bottom: 0; right: 0; width: 400px; background: #ffffff; z-index: 101;
+    box-shadow: -5px 0 25px rgba(0,0,0,0.18); display: flex; flex-direction: column; transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.2, 1, 0.3, 1);
+  }
+  .ai-drawer.open { transform: translateX(0); }
+  .ai-header { padding: 16px 20px; border-bottom: 1px solid #ebd7cc; display: flex; align-items: center; justify-content: space-between; background: #fdfaf8; }
+  .ai-title { font-size: 15px; font-weight: 700; color: #3b0907; display: flex; align-items: center; gap: 8px; }
+
+  .ai-apikey-bar {
+    padding: 8px 16px; background: #fef8f4; border-bottom: 1px solid #fae4d7; display: flex; align-items: center; gap: 8px; font-size: 11.5px;
+  }
+  .ai-apikey-input {
+    flex: 1; border: 1px solid #e0c8ba; border-radius: 4px; padding: 4px 8px; font-size: 11.5px; outline: none; background: #fff;
+  }
+  .ai-apikey-btn {
+    background: #8b1512; color: #fff; border: none; border-radius: 4px; padding: 4px 10px; font-weight: 600; cursor: pointer;
+  }
+
+  .ai-chat-box { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; background: #fffdfc; }
+  .chat-msg { max-width: 86%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.55; white-space: pre-wrap; }
+  .chat-msg.bot { align-self: flex-start; background: #f5ece5; color: #2e2620; border-bottom-left-radius: 2px; }
+  .chat-msg.user { align-self: flex-end; background: var(--primary-red); color: #fff; border-bottom-right-radius: 2px; }
+  .ai-footer { padding: 12px 16px; border-top: 1px solid #ebd7cc; background: #fff; display: flex; gap: 8px; }
+  .ai-input { flex: 1; padding: 8px 14px; border-radius: 20px; border: 1px solid #d4c09d; outline: none; font-size: 13px; font-family: inherit; }
+  .ai-send-btn { background: var(--primary-red); color: #fff; border: none; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+</style>
 </head>
 <body>
 
-    <!-- Header Web App -->
-    <div class="topbar">
-        <div class="topbar-left">
-            <button class="btn-outline">☰ Mục lục</button>
-            <div class="title-area">
-                <h2>HCM101 Interactive Flipbook</h2>
-                <p>Môn học: Tư tưởng Hồ Chí Minh</p>
+<div class="bg-decor">
+  <div class="temple-decor"></div>
+  <div class="skyline-decor"></div>
+  <div class="bokeh"></div>
+</div>
+
+<header class="top-navbar">
+  <div class="nav-left">
+    <button class="btn-toc" onclick="toggleSidebar()">
+      <span>☰</span>
+      <span>Mục lục 5 Mốc</span>
+    </button>
+    <div class="book-meta">
+      <div class="book-icon-badge">📖</div>
+      <div class="book-title-wrap">
+        <h1>HCM202 3D Flipbook <span class="audio-tag">Audiobook 3D</span></h1>
+        <div class="book-subtitle">Tư tưởng Hồ Chí Minh • 5 Thời Kỳ Phát Triển (1890 – 1969)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-right">
+    <button class="nav-btn btn-tts" onclick="speakCurrentPage()">🔊 Đọc tự động</button>
+    <button class="nav-btn btn-autoturn" id="autoFlipBtn" onclick="toggleAutoFlip()">Tự lật trang: TẮT</button>
+    <button class="nav-btn btn-bookmark" onclick="toggleBookmarkCurrent()">🔖 <span id="bookmarkBtnText">Lưu trang</span></button>
+    <button class="icon-tool-btn" onclick="toggleFullscreen()" title="Toàn màn hình">⛶</button>
+    <button class="icon-tool-btn" onclick="toggleMute()" title="Âm thanh" id="volumeBtn">🔊</button>
+  </div>
+</header>
+
+<main class="stage-container" id="stageContainer">
+  <button class="side-nav-btn prev-btn" id="sidePrevBtn" onclick="turnPrev()" title="Trang trước">❮</button>
+  <button class="side-nav-btn next-btn" id="sideNextBtn" onclick="turnNext()" title="Trang sau">❯</button>
+
+  <div class="book-viewport" id="bookViewport">
+    <div class="book closed-start" id="book">
+      <div class="book-block-edge-right"></div>
+      <div class="book-block-edge-left"></div>
+      <div class="book-block-edge-bottom"></div>
+
+      <!-- Nơ kẹp sách -->
+      <div class="book-ribbon" id="bookRibbon" onclick="toggleBookmarkCurrent()" title="Đánh dấu trang này"></div>
+
+      <!-- SHEET 1: FRONT = Trang 1, BACK = Trang 2 -->
+      <div class="sheet" id="sheet1" style="z-index: 10;">
+        <!-- TRANG 1: BÌA TRƯỚC -->
+        <div class="page front cover-front">
+          <div class="cover-portrait-bg"></div>
+          <div class="cover-spine">
+            <span class="cover-spine-text">Tư Tưởng Hồ Chí Minh</span>
+          </div>
+          <div class="drag-corner-handle drag-corner-right" onmousedown="startDragTurn(event, 'next')" ontouchstart="startDragTurn(event, 'next')"></div>
+          <span class="cover-badge-top">GIÁO TRÌNH CHUẨN HCM202</span>
+          
+          <div class="cover-portrait-badge">
+            <img src="HCM.jpg" alt="Chủ tịch Hồ Chí Minh" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Ho_Chi_Minh_1946.jpg/600px-Ho_Chi_Minh_1946.jpg';">
+          </div>
+
+          <div class="cover-subtitle">Kỷ Yếu Lịch Sử & Chuyên Đề Tư Tưởng</div>
+          <h1 class="cover-title" style="font-family: 'Playfair Display', serif; letter-spacing: 0.5px;">BẢN ĐỒ HÌNH THÀNH<br>TƯ TƯỞNG HỒ CHÍ MINH</h1>
+          <div class="cover-quote">
+            "Dĩ bất biến ứng vạn biến"<br>
+            "Không có gì quý hơn độc lập, tự do"
+          </div>
+          <div class="cover-footer">1890 – 1969 • NGUYỄN ÁI QUỐC - HỒ CHÍ MINH</div>
+        </div>
+
+        <!-- TRANG 2: VIDEO HÀNH TRÌNH BÁC HỒ -->
+        <div class="page back">
+          <div class="drag-corner-handle drag-corner-left" onmousedown="startDragTurn(event, 'prev')" ontouchstart="startDragTurn(event, 'prev')"></div>
+          <div class="header-decor">
+            <span class="meta-tag">Khái Quát Lịch Sử • 1911 – 1941</span>
+            <h2 class="page-title">Hành Trình 30 Năm Bôn Ba Cứu Nước</h2>
+          </div>
+          <div class="content-body" style="padding: 0 4px; overflow: hidden; justify-content: center;">
+            <div class="video-stage-box">
+              <div class="video-frame-container" id="videoWrapper">
+                <iframe 
+                  id="driveVideoIframe"
+                  src="https://drive.google.com/file/d/1of46j-cHkr1qnQDQyqI7gEzzQdl22V0t/preview" 
+                  allow="autoplay; encrypted-media; fullscreen"
+                  allowfullscreen>
+                </iframe>
+              </div>
+              <div style="font-size: 10px; color: #635345; font-style: italic; text-align: center; margin-top: 6px;">
+                🎥 Phim tư liệu: Bản đồ hành trình qua 3 đại dương, 4 châu lục của Người.
+              </div>
+              <div class="quote-box" style="margin: 6px 0 0 0; width: 100%;">
+                "Đó không phải là một chuyến du ngoạn thế giới. Đây chính là hành trình bôn ba suốt 30 năm của người thanh niên yêu nước Nguyễn Tất Thành – Chủ tịch Hồ Chí Minh vĩ đại."
+              </div>
             </div>
+          </div>
+          <div class="page-footer">
+            <span>Video Hành Trình Lịch Sử</span>
+            <span>Trang 2 / 18</span>
+          </div>
         </div>
-        <div class="topbar-right">
-            <button class="btn-outline" id="btn-prev">❮ Lật về trước</button>
-            <button class="btn-primary">📖 Đọc tự động: TẮT</button>
-            <button class="btn-outline" id="btn-next">Lật sang sau ❯</button>
+      </div>
+
+      <!-- SHEET 2: FRONT = Trang 3, BACK = Trang 4 -->
+      <div class="sheet" id="sheet2" style="z-index: 9;">
+        <!-- TRANG 3: BẢN ĐỒ NHÁNH TIMELINE -->
+        <div class="page front">
+          <div class="drag-corner-handle drag-corner-right" onmousedown="startDragTurn(event, 'next')" ontouchstart="startDragTurn(event, 'next')"></div>
+          <div class="header-decor">
+            <span class="meta-tag">HCM202 • Sơ Đồ Tổng Quan</span>
+            <h2 class="page-title">Bản Đồ 5 Thời Kỳ Tư Tưởng Hồ Chí Minh</h2>
+          </div>
+          <div class="content-body" style="padding-right: 0; overflow-y: hidden;">
+            <div class="roadmap-container">
+              <div class="roadmap-root-box">
+                <div class="roadmap-root-title">Quá trình hình thành<br>ttHCM(1890-1969)</div>
+              </div>
+
+              <div class="roadmap-tree-body">
+                <div class="roadmap-node node-blue" onclick="jumpToPageNumber(4)">
+                  <div class="roadmap-target-circle"></div>
+                  <div class="roadmap-pill-card" title="Bấm để đến Mốc 1 (Trang 4)">
+                    &lt; 1911: Hình thành tt yêu nước và chí hướng cứu nước
+                  </div>
+                </div>
+
+                <div class="roadmap-node node-purple" onclick="jumpToPageNumber(7)">
+                  <div class="roadmap-target-circle"></div>
+                  <div class="roadmap-pill-card" title="Bấm để đến Mốc 2 (Trang 7)">
+                    1911-1920: Tìm thấy con đường cứu nước
+                  </div>
+                </div>
+
+                <div class="roadmap-node node-pink" onclick="jumpToPageNumber(9)">
+                  <div class="roadmap-target-circle"></div>
+                  <div class="roadmap-pill-card" title="Bấm để đến Mốc 3 (Trang 9)">
+                    1921-1930: Hình thành cơ bản tư tưởng về CMVN
+                  </div>
+                </div>
+
+                <div class="roadmap-node node-orange" onclick="jumpToPageNumber(11)">
+                  <div class="roadmap-target-circle"></div>
+                  <div class="roadmap-pill-card" title="Bấm để đến Mốc 4 (Trang 11)">
+                    1930-1945: Thử thách, kiên trì, giữ vững lập trường CM
+                  </div>
+                </div>
+
+                <div class="roadmap-node node-yellow" onclick="jumpToPageNumber(13)">
+                  <div class="roadmap-target-circle"></div>
+                  <div class="roadmap-pill-card" title="Bấm để đến Mốc 5 (Trang 13)">
+                    1945-1969: Tiếp tục phát triển, hoàn thiện
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="page-footer">
+            <span>Sơ Đồ 5 Mốc Bản Đồ</span>
+            <span>Trang 3 / 18</span>
+          </div>
         </div>
+
+        <!-- TRANG 4: THỜI KỲ 1 -->
+        <div class="page back">
+          <div class="drag-corner-handle drag-corner-left" onmousedown="startDragTurn(event, 'prev')" ontouchstart="startDragTurn(event, 'prev')"></div>
+          <div class="header-decor">
+            <span class="meta-tag">Thời kỳ 1 • Trước ngày 05-06-1911</span>
+            <h2 class="page-title">Quê Hương & Gia Đình Khoa Bảng</h2>
+          </div>
+          <div class="content-body">
+            <p><strong>1. Thời kỳ từ ngày 5-6-1911 trở về trước:</strong> Hình thành tư tưởng yêu nước và chí hướng tìm con đường cứu nước mới.</p>
+            <div class="section-label">Ảnh hưởng của quê hương và gia đình:</div>
+            <ul class="bullet-list">
+              <li>Nghệ An là vùng đất địa linh nhân kiệt, giàu truyền thống yêu nước, lắm nhân tài và anh hùng nổi tiếng trong lịch sử dân tộc.</li>
+              <li>Hồ Chí Minh sinh ra trong một gia đình khoa bảng. Cụ thân sinh là Nguyễn Sinh Sắc đỗ Phó bảng, thường tâm sự: <em>"Quan trường là nô lệ trong những người nô lệ, lại càng nô lệ hơn"</em>, và dạy các con: <em>"Đừng lấy phong cách nhà quan làm phong cách nhà ta"</em>.</li>
+            </ul>
+            <div class="image-frame">
+              <img src="nguyen-sinh-sac.jpg" 
+                   alt="Cụ Phó bảng Nguyễn Sinh Sắc"
+                   onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Nguyensinhsac.jpg/600px-Nguyensinhsac.jpg';">
+              <div class="image-caption">Cụ Phó bảng Nguyễn Sinh Sắc (1862 – 1929) - Thân phụ Bác Hồ.</div>
+            </div>
+            <p>Tinh thần yêu nước, thương dân và nhân cách của cụ Nguyễn Sinh Sắc có ảnh hưởng lớn lao đến tư tưởng, nhân cách Hồ Chí Minh thuở niên thiếu.</p>
+          </div>
+          <div class="page-footer">
+            <span>Nền Tảng Gia Đình</span>
+            <span>Trang 4 / 18</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SHEET 3: FRONT = Trang 5, BACK = Trang 6 -->
+      <div class="sheet" id="sheet3" style="z-index: 8;">
+        <!-- TRANG 5: THỜI KỲ 1 -->
+        <div class="page front">
+          <div class="drag-corner-handle drag-corner-right" onmousedown="startDragTurn(event, 'next')" ontouchstart="startDragTurn(event, 'next')"></div>
+          <div class="header-decor">
+            <span class="meta-tag">Thời kỳ 1 • Tấm Lòng Người Mẹ & Hoạt Động</span>
+            <h2 class="page-title">Tiếp Thu Truyền Thống Yêu Nước</h2>
+          </div>
+          <div class="content-body">
+            <p>Cụ Hoàng Thị Loan – người mẹ Việt Nam điển hình về tính cần mẫn, tần tảo, đảm đang, hết mực thương yêu chồng con và ăn ở nhân đức với mọi người – có ảnh hưởng lớn đến các con bằng tấm lòng nhân hậu và mẫn cảm của người mẹ.</p>
+            <div class="section-label">Quá trình tiếp thu và hoạt động ban đầu:</div>
+            <p>Tiếp thu truyền thống tốt đẹp của quê hương, gia đình, được theo học các vị túc nho và tiếp xúc với nhiều loại sách báo tiến bộ ở các trường, lớp tại Vinh, tại kinh đô Huế, Hồ Chí Minh sớm có tư tưởng yêu nước và thể hiện rõ trong hành động:</p>
+            <ul class="bullet-list">
+              <li>Tham gia phong trào chống thuế ở Trung Kỳ (năm 1908).</li>
+              <li>Là thầy giáo ở Trường Dục Thanh (Phan Thiết, 1910), Người đem hết nhiệt tình truyền thụ cho học sinh lòng yêu nước và những suy nghĩ về vận mệnh nước nhà.</li>
+            </ul>
+            <div class="image-frame">
+              <img src="IMG_6531.WEBP" 
+                   alt="Người thanh niên Nguyễn Tất Thành"
+                   onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Truong_Duc_Thanh.jpg/800px-Truong_Duc_Thanh.jpg';">
+              <div class="image-caption">Người thanh niên yêu nước Nguyễn Tất Thành (Văn Ba) trước hành trình cứu nước.</div>
+            </div>
+          </div>
+          <div class="page-footer">
+            <span>Truyền Thống & Hành Động</span>
+            <span>Trang 5 / 18</span>
+          </div>
+        </div>
+
+        <!-- TRANG 6: THỜI KỲ 1 -->
+        <div class="page back">
+          <div class="drag-corner-handle drag-corner-left" onmousedown="startDragTurn(event, 'prev')" ontouchstart="startDragTurn(event, 'prev')"></div>
+          <div class="header-decor">
+            <span class="meta-tag">Thời kỳ 1 • Bến Cảng Nhà Rồng 1911</span>
+            <h2 class="page-title">Bước Ngoặt Sang Phương Tây</h2>
+          </div>
+          <div class="content-body">
+            <div class="section-label">Bước ngoặt chí hướng:</div>
+            <p>Tuy rất khâm phục tinh thần yêu nước của các vị tiền bối cách mạng nổi tiếng như Phan Bội Châu, Phan Châu Trinh, Hoàng Hoa Thám..., nhưng Người sáng suốt phê phán, không tán thành, không đi theo các phương pháp, khuynh hướng cứu nước của họ.</p>
+            <div class="quote-box">
+              Người muốn tìm hiểu những gì ẩn giấu sau sức mạnh của kẻ thù và học hỏi kinh nghiệm cách mạng trên thế giới. Ngày 5-6-1911, Hồ Chí Minh đi ra nước ngoài tìm con đường cứu nước.
+            </div>
+            <div class="image-frame">
+              <img src="IMG_6530.JPG" 
+                   alt="Tàu Đô đốc Latouche-Tréville"
+                   onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Ben_Nha_Rong_xua.jpg/800px-Ben_Nha_Rong_xua.jpg';">
+              <div class="image-caption">Tàu buôn Đô đốc Latouche-Tréville - Nơi Nguyễn Tất Thành rời Tổ quốc ngày 05-06-1911.</div>
+            </div>
+            <p>Quyết định sang phương Tây khảo sát trực tiếp kẻ thù chính là khởi đầu cho một hành trình vĩ đại làm thay đổi số phận cả dân tộc.</p>
+          </div>
+          <div class="page-footer">
+            <span>Chí Hướng Cứu Nước Mới</span>
+            <span>Trang 6 / 18</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SHEET 4: FRONT = Trang 7, BACK = Trang 8 -->
+      <div class="sheet" id="sheet4" style="z-index: 7;">
+        <!-- TRANG 7: THỜI KỲ 2 -->
+        <div class="page front">
+          <div class="drag-corner-handle drag-corner-right" onmousedown="startDragTurn(event, 'next')" ontouchstart="startDragTurn(event, 'next')"></div>
+          <div class="header-decor">
+            <span class="meta-tag">Thời kỳ 2 • 06-06-1911 đến 30-12-1920</span>
+            <h2 class="page-title">Khảo Sát Thực Tiễn & Bản Yêu Sách</h2>
+          </div>
+          <div class="content-body">
+            <p><strong>2. Thời kỳ từ ngày 6-6-1911 đến ngày 30-12-1920:</strong> Hình thành tư tưởng cứu nước, giải phóng dân tộc Việt Nam theo con đường cách mạng vô sản.</p>
+            <div class="section-label">Khảo sát thực tiễn thế giới & Gửi Yêu sách (1911 – 1919):</div>
+            <ul class="bullet-list">
+              <li>Nhận thức mới: Nhân dân lao động các nước bị bóc lột đều là bạn; chủ nghĩa thực dân ở đâu cũng là kẻ thù.</li>
+              <li>Năm 1919, gia nhập Đảng Xã hội Pháp. Ngày 18-6-1919, lấy tên Nguyễn Ái Quốc gửi <em>Yêu sách của nhân dân An Nam</em> tới Hội nghị Versailles.</li>
+            </ul>
+            <!-- ĐÃ CẬP NHẬT ẢNH MỚI CHO BẢN YÊU SÁCH -->
+            <div class="image-frame-tall">
+              <img src="unnamed-8_637412515766750235_HasThumb.jpg" 
+                   alt="Bản Yêu sách của nhân dân An Nam"
+                   onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Ben_Nha_Rong_xua.jpg/800px-Ben_Nha_Rong_xua.jpg';">
+              <div class="image-caption">Bản "Yêu sách của nhân dân An Nam" gửi tới Hội nghị Versailles (18-6-1919).</div>
+            </div>
+          </div>
+          <div class="page-footer">
+            <span>Khảo Sát & Yêu Sách 1919</span>
+            <span>Trang 7 / 18</span>
+          </div>
+        </div>
+
+        <!-- TRANG 8: THỜI KỲ 2 -->
+        <div class="page back">
+          <div class="drag-corner-handle drag-corner-left" onmousedown="startDragTurn(event, 'prev')" ontouchstart="startDragTurn(event, 'prev')"></div>
+          <div class="header-decor">
+            <span class="meta-tag">Thời kỳ 2 • Luận Cương Lênin & Đại Hội Tours</span>
+            <h2 class="page-title">Trở Thành Người Cộng Sản</h2>
+          </div>
+          <div class="content-body">
+            <div class="section-label">Tìm thấy con đường cứu nước và trở thành người cộng sản (1920):</div>
+            <p>Tháng 7-1920, Người đọc bản <em>Sơ thảo lần thứ nhất những luận cương về vấn đề dân tộc và vấn đề thuộc địa</em> của V.I. Lênin, từ đó tìm thấy và xác định rõ phương hướng đấu tranh giải phóng dân tộc Việt Nam theo con đường cách mạng vô sản.</p>
+            <div class="quote-box">
+              Luận cương của Lênin đã giúp Người tìm ra con đường cứu nước đúng đắn: độc lập dân tộc gắn liền với chủ nghĩa xã hội, con đường cách mạng vô sản.
+            </div>
+            <div class="image-frame">
+              <img src="Đồng chí Nguyễn Ái Quốc tham dự và phát biểu tại Đại hội đại biểu toàn quốc lần thứ XVIII Đảng Xã hội Pháp ở thành phố Tours, ngày 26121920..jpg" 
+                   alt="Nguyễn Ái Quốc phát biểu tại Đại hội Tours 1920"
+                   onerror="this.onerror=null; this.src='vna_potal_ky_niem_110_nam_ngay_bac_ho_ra_di_tim_duong_cuu_nuoc_561911_–_562021_hoai_bao_giai_phong_dan_toc_khat_vong_gianh_doc_lap_tu_do___stand.jpg';">
+              <div class="image-caption">Nguyễn Ái Quốc phát biểu tại Đại hội đại biểu toàn quốc lần thứ XVIII Đảng Xã hội Pháp ở Tours (12-1920).</div>
+            </div>
+            <p>Tại Đại hội ở thành phố Tours (25 đến 30-12-1920), Người bỏ phiếu tán thành Quốc tế Cộng sản, tham gia sáng lập Đảng Cộng sản Pháp, trở thành người cộng sản Việt Nam đầu tiên.</p>
+          </div>
+          <div class="page-footer">
+            <span>Bước Ngoặt Vô Sản 1920</span>
+            <span>Trang 8 / 18</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SHEET 5: FRONT = Trang 9, BACK = Trang 10 -->
+      <div class="sheet" id="sheet5" style="z-index: 6;">
+        <!-- TRANG 9: THỜI KỲ 3 -->
+        <div class="page front">
+          <div class="drag-corner-handle drag-corner-right" onmousedown="startDragTurn(event, 'next')" ontouchstart="startDragTurn(event, 'next')"></div>
+          <div class="header-decor">
+            <span class="meta-tag">Thời kỳ 3 • 31-12-1920 đến 03-02-1930</span>
+            <h2 class="page-title">Đấu Tranh Báo Chí & Lý Luận</h2>
+          </div>
+          <div class="content-body">
+            <p><strong>3. Thời kỳ từ ngày 31-12-1920 đến ngày 3-2-1930:</strong> Hình thành những nội dung cơ bản tư tưởng về cách mạng Việt Nam.</p>
+            <div class="section-label">Đẩy mạnh đấu tranh báo chí và lý luận:</div>
+            <ul class="bullet-list">
+              <li>Viết nhiều bài báo trên báo L'Humanité (như <em>Vấn đề dân bản xứ</em> - 8/1919, <em>Ở Đông Dương</em> - 4/11/1920).</li>
+              <li>Năm 1921, tham gia sáng lập Hội Liên hiệp Thuộc địa. Năm 1922, làm Trưởng Tiểu ban Nghiên cứu vấn đề dân tộc thuộc địa của Đảng Cộng sản Pháp, sáng lập báo <em>Le Paria</em> (Người cùng khổ) làm chủ bút, tổng biên tập kiêm phát hành.</li>
+            </ul>
+            <div class="image-frame">
+              <img src="efc1b16bcff30ead57e2-16527517313622124026038-39-0-1289-2000-crop-1652751787542662870572.jpg" 
+                   alt="Báo Le Paria"
+                   onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Le_Paria_No_1.jpg/600px-Le_Paria_No_1.jpg';">
+              <div class="image-caption">Trang nhất Báo Le Paria (Người cùng khổ) do Nguyễn Ái Quốc sáng lập năm 1922.</div>
+            </div>
+          </div>
+          <div class="page-footer">
+            <span>Báo Chí Cách Mạng 1921-1925</span>
+            <span>Trang 9 / 18</span>
+          </div>
+        </div>
+
+        <!-- TRANG 10: THỜI KỲ 3 -->
+        <div class="page back">
+          <div class="drag-corner-handle drag-corner-left" onmousedown="startDragTurn(event, 'prev')" ontouchstart="startDragTurn(event, 'prev')"></div>
+          <div class="header-decor">
+            <span class="meta-tag">Thời kỳ 3 • Đường Cách Mệnh & Thành Lập Đảng</span>
+            <h2 class="page-title">Cương Lĩnh Chính Trị Đầu Tiên</h2>
+          </div>
+          <div class="content-body">
+            <div class="section-label">Chuẩn bị về tổ chức và cán bộ cho sự ra đời của Đảng:</div>
+            <ul class="bullet-list">
+              <li>Tháng 6-1925, sáng lập Hội Việt Nam Cách mạng Thanh niên tại Quảng Châu (Trung Quốc), ra báo <em>Thanh niên</em> bằng tiếng Việt.</li>
+              <li>Tác phẩm <em>Đường cách mệnh</em> (1927): Vạch rõ cách mạng phải có đảng cộng sản với chủ nghĩa Mác - Lênin làm cốt; lực lượng là toàn thể nhân dân, nòng cốt là liên minh công nông.</li>
+            </ul>
+            <div class="section-label">Thành lập Đảng Cộng sản Việt Nam (Đầu năm 1930):</div>
+            <p>Hồ Chí Minh chủ trì Hội nghị hợp nhất, soạn thảo Cương lĩnh chính trị đầu tiên:</p>
+            <div class="image-frame">
+              <img src="Hội nghị thành lập Đảng Cộng sản Việt Nam.jpg" 
+                   alt="Hội nghị thành lập Đảng Cộng sản Việt Nam đầu năm 1930"
+                   onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Ho_Chi_Minh_at_the_Presidential_Palace_in_Hanoi%2C_1957.jpg/800px-Ho_Chi_Minh_at_the_Presidential_Palace_in_Hanoi%2C_1957.jpg';">
+              <div class="image-caption">Tranh vẽ lịch sử: Hội nghị hợp nhất thành lập Đảng Cộng sản Việt Nam (mùa xuân 1930).</div>
+            </div>
+            <p>Đường lối chiến lược: <em>"Làm tư sản dân quyền cách mạng và thổ địa cách mạng để đi tới xã hội cộng sản"</em>.</p>
+          </div>
+          <div class="page-footer">
+            <span>Cương Lĩnh Mùa Xuân 1930</span>
+            <span>Trang 10 / 18</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SHEET 6: FRONT = Trang 11, BACK = Trang 12 -->
+      <div class="sheet" id="sheet6" style="z-index: 5;">
+        <!-- TRANG 11: THỜI KỲ 4 -->
+        <div class="page front">
+          <div class="drag-corner-handle drag-corner-right" onmousedown="startDragTurn(event, 'next')" ontouchstart="startDragTurn(event, 'next')"></div>
+          <div class="header-decor">
+            <span class="meta-tag">Thời kỳ 4 • 04-02-1930 đến 28-01-1941</span>
+            <h2 class="page-title">Vượt Qua Thử Thách Giáo Điều</h2>
+          </div>
+          <div class="content-body">
+            <p><strong>4. Thời kỳ từ ngày 4-2-1930 đến ngày 28-1-1941:</strong> Vượt qua thử thách, giữ vững đường lối, phương pháp cách mạng Việt Nam đúng đắn, sáng tạo.</p>
+            <div class="section-label">Thử thách từ sự bất đồng quan điểm trong phong trào cộng sản:</div>
+            <ul class="bullet-list">
+              <li>Do chịu ảnh hưởng của quan điểm giáo điều tả khuynh tại Đại hội VI Quốc tế Cộng sản (1928), một số người nhìn nhận sai lầm về Hồ Chí Minh, phê phán tư tưởng của Người là "hữu khuynh", "dân tộc chủ nghĩa".</li>
+              <li>Hội nghị Trung ương Đảng họp tháng 10-1930 ra án nghị quyết thủ tiêu Chánh cương, Sách lược vắn tắt, đổi tên Đảng thành Đảng Cộng sản Đông Dương.</li>
+            </ul>
+            <div class="image-frame">
+              <img src="c426a48e47e939e2e0c3e71adffa8e8b6f_20260904172156.jpg_width=1800.jpg" 
+                   alt="Nhà tù Victoria Hồng Kông"
+                   onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Victoria_Prison_Hong_Kong.jpg/800px-Victoria_Prison_Hong_Kong.jpg';">
+              <div class="image-caption">Di tích nhà tù Victoria (Hồng Kông) nơi giam giữ lãnh tụ Nguyễn Ái Quốc (1931 – 1933).</div>
+            </div>
+          </div>
+          <div class="page-footer">
+            <span>Sóng Gió Thử Thách 1930-1933</span>
+            <span>Trang 11 / 18</span>
+          </div>
+        </div>
+
+        <!-- TRANG 12: THỜI KỲ 4 -->
+        <div class="page back">
+          <div class="drag-corner-handle drag-corner-left" onmousedown="startDragTurn(event, 'prev')" ontouchstart="startDragTurn(event, 'prev')"></div>
+          <div class="header-decor">
+            <span class="meta-tag">Thời kỳ 4 • Trở Về Tổ Quốc & Hội Nghị TƯ 8</span>
+            <h2 class="page-title">Hội Nghị Trung Ương 8 (05-1941)</h2>
+          </div>
+          <div class="content-body">
+            <p>Thoát khỏi nhà tù thực dân Anh ở Hồng Kông (1931 – 1933), năm 1934 Người trở lại Liên Xô học Trường Quốc tế Lênin. Ngày 6-6-1938, Người gửi thư đề nghị về nước: <em>"Xin đồng chí giúp đỡ tôi thay đổi tình cảnh đau buồn này... Đừng để tôi sống quá lâu trong tình trạng không hoạt động và giống như là sống ở bên cạnh, ở bên ngoài của Đảng"</em>.</p>
+            <p>Ngày 28-1-1941, Người về nước. Tháng 5-1941, tại Pác Bó, Người chủ trì Hội nghị TƯ 8, quyết định chuyển hướng chiến lược:</p>
+            <div class="quote-box">
+              Khẳng định: "Trong lúc này quyền lợi dân tộc giải phóng cao hơn hết thảy. Chúng ta phải đoàn kết lại đánh đổ bọn đế quốc và bọn Việt gian đặng cứu giống nòi ra khỏi nước sôi lửa nóng".
+            </div>
+            <div class="image-frame">
+              <img src="ảnh 85 nam Bac về nuớc.png" 
+                   alt="Tuyên truyền 85 năm Ngày Bác Hồ về nước"
+                   onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Ho_Chi_Minh_portrait_1950s.jpg/800px-Ho_Chi_Minh_portrait_1950s.jpg';">
+              <div class="image-caption">Tranh cổ động kỷ niệm Ngày Bác Hồ về nước trực tiếp lãnh đạo cách mạng Việt Nam (28/01/1941).</div>
+            </div>
+            <p>Nghị quyết Hội nghị TƯ 8 thực chất là sự trở về hoàn toàn với quan điểm đúng đắn của Hồ Chí Minh đã nêu trong Cương lĩnh năm 1930.</p>
+          </div>
+          <div class="page-footer">
+            <span>Ngọn Đuốc Soi Đường Pác Bó</span>
+            <span>Trang 12 / 18</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SHEET 7: FRONT = Trang 13, BACK = Trang 14 -->
+      <div class="sheet" id="sheet7" style="z-index: 4;">
+        <!-- TRANG 13: THỜI KỲ 5 -->
+        <div class="page front">
+          <div class="drag-corner-handle drag-corner-right" onmousedown="startDragTurn(event, 'next')" ontouchstart="startDragTurn(event, 'next')"></div>
+          <div class="header-decor">
+            <span class="meta-tag">Thời kỳ 5 • 29-01-1941 đến 02-09-1969</span>
+            <h2 class="page-title">Cách Mạng Tháng Tám 1945</h2>
+          </div>
+          <div class="content-body">
+            <p><strong>5. Thời kỳ từ ngày 29-1-1941 đến ngày 2-9-1969:</strong> Tư tưởng Hồ Chí Minh tiếp tục phát triển, soi đường cho sự nghiệp cách mạng của Đảng và nhân dân ta.</p>
+            <div class="section-label">Lãnh đạo giành chính quyền và khai sinh nước Việt Nam mới (1941 – 1945):</div>
+            <ul class="bullet-list">
+              <li>Sáng lập Mặt trận Việt Minh (19-5-1941), sáng lập Đội Việt Nam Tuyên truyền Giải phóng quân (22-12-1944).</li>
+              <li>Ngày 18-8-1945, ra Lời kêu gọi Tổng khởi nghĩa. Cách mạng Tháng Tám 1945 thành công vang dội.</li>
+              <li>Ngày 02-9-1945, đọc Tuyên ngôn Độc lập, khai sinh nước Việt Nam Dân chủ Cộng hòa, mở ra kỷ nguyên độc lập dân tộc gắn liền với chủ nghĩa xã hội.</li>
+            </ul>
+            <div class="image-frame">
+              <img src="images (2).jpg" 
+                   alt="Mít tinh Tổng khởi nghĩa Cách mạng Tháng Tám 1945"
+                   onerror="this.onerror=null; this.src='images (1).jpg';">
+              <div class="image-caption">Mít tinh tại Quảng trường Nhà hát Lớn Hà Nội ngày 19-8-1945 giành chính quyền.</div>
+            </div>
+          </div>
+          <div class="page-footer">
+            <span>Khai Sinh Nước Việt Nam Mới</span>
+            <span>Trang 13 / 18</span>
+          </div>
+        </div>
+
+        <!-- TRANG 14: THỜI KỲ 5 -->
+        <div class="page back">
+          <div class="drag-corner-handle drag-corner-left" onmousedown="startDragTurn(event, 'prev')" ontouchstart="startDragTurn(event, 'prev')"></div>
+          <div class="header-decor">
+            <span class="meta-tag">Thời kỳ 5 • Dĩ Bất Biến & Kháng Chiến Toàn Dân</span>
+            <h2 class="page-title">Bảo Vệ Chính Quyền & Kháng Chiến Chống Pháp</h2>
+          </div>
+          <div class="content-body">
+            <div class="section-label">Chỉ đạo chiến lược, sách lược bảo vệ chính quyền non trẻ (1945 – 1946):</div>
+            <p>Thực hiện phương châm "Dĩ bất biến ứng vạn biến", nhân nhượng có nguyên tắc: Tạm hòa hoãn với Tưởng để đối phó với Pháp, sau đó tạm hòa hoãn với Pháp để đuổi quân Tưởng và bọn tay sai, giành thời gian củng cố lực lượng chuẩn bị kháng chiến.</p>
+            <div class="image-frame">
+              <img src="ttxvn_mega7.jpg" 
+                   alt="Phiên họp đầu tiên của Hội đồng Chính phủ lâm thời 1945"
+                   onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Ho_Chi_Minh_at_the_Presidential_Palace_in_Hanoi%2C_1957.jpg/800px-Ho_Chi_Minh_at_the_Presidential_Palace_in_Hanoi%2C_1957.jpg';">
+              <div class="image-caption">Chủ tịch Hồ Chí Minh chủ trì phiên họp đầu tiên của Hội đồng Chính phủ lâm thời (03-09-1945).</div>
+            </div>
+            <p>Đề ra đường lối kháng chiến "Toàn dân, toàn diện, lâu dài, tự lực cánh sinh"; hoàn thiện lý luận cách mạng dân tộc dân chủ nhân dân.</p>
+          </div>
+          <div class="page-footer">
+            <span>Toàn Dân Kháng Chiến 1946-1954</span>
+            <span>Trang 14 / 18</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SHEET 8: FRONT = Trang 15, BACK = Trang 16 -->
+      <div class="sheet" id="sheet8" style="z-index: 3;">
+        <!-- TRANG 15: THỜI KỲ 5 -->
+        <div class="page front">
+          <div class="drag-corner-handle drag-corner-right" onmousedown="startDragTurn(event, 'next')" ontouchstart="startDragTurn(event, 'next')"></div>
+          <div class="header-decor">
+            <span class="meta-tag">Thời kỳ 5 • 1954 đến 1969</span>
+            <h2 class="page-title">Hai Nhiệm Vụ Chiến Lược & Chân Lý Thời Đại</h2>
+          </div>
+          <div class="content-body">
+            <div class="section-label">Lãnh đạo đồng thời hai nhiệm vụ chiến lược và phát triển hoàn thiện lý luận (1954 – 1969):</div>
+            <ul class="bullet-list">
+              <li>Lãnh đạo thực hiện đường lối: Xây dựng chủ nghĩa xã hội ở miền Bắc và tiếp tục cuộc cách mạng dân tộc dân chủ nhân dân ở miền Nam.</li>
+              <li>Bổ sung, hoàn thiện hệ thống quan điểm về chính trị, kinh tế, quân sự, văn hóa, đạo đức, đối ngoại...</li>
+            </ul>
+            <div class="quote-box">
+              Ngày 17-7-1966, ra Lời kêu gọi nêu chân lý lớn của thời đại: "Không có gì quý hơn độc lập, tự do". Khẳng định: "Đến ngày thắng lợi, nhân dân ta sẽ xây dựng lại đất nước ta đàng hoàng hơn, to đẹp hơn!".
+            </div>
+            <div class="image-frame">
+              <img src="images (3).jpg" 
+                   alt="Bác Hồ nói chuyện tại Đại hội Anh hùng, Chiến sĩ thi đua 12-1966"
+                   onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Ho_Chi_Minh_portrait_1950s.jpg/800px-Ho_Chi_Minh_portrait_1950s.jpg';">
+              <div class="image-caption">Bác Hồ nói chuyện tại Đại hội Anh hùng, Chiến sĩ thi đua chống Mỹ cứu nước lần thứ IV (12-1966).</div>
+            </div>
+          </div>
+          <div class="page-footer">
+            <span>Không Có Gì Quý Hơn Độc Lập Tự Do</span>
+            <span>Trang 15 / 18</span>
+          </div>
+        </div>
+
+        <!-- TRANG 16: THỜI KỲ 5 -->
+        <div class="page back">
+          <div class="drag-corner-handle drag-corner-left" onmousedown="startDragTurn(event, 'prev')" ontouchstart="startDragTurn(event, 'prev')"></div>
+          <div class="header-decor">
+            <span class="meta-tag">Thời kỳ 5 • Bản Di Chúc Lịch Sử Vô Giá</span>
+            <h2 class="page-title">Bản Di Chúc Thiêng Liêng 1969</h2>
+          </div>
+          <div class="content-body">
+            <p>Để lại bản Di chúc lịch sử vô giá kết tinh tư tưởng, trí tuệ, đạo đức, phong cách của Người trao gửi cho toàn Đảng và toàn dân tộc.</p>
+            <div class="quote-box">
+              Mong muốn cuối cùng: "Toàn Đảng, toàn dân ta đoàn kết phấn đấu, xây dựng một nước Việt Nam hòa bình, thống nhất, độc lập, dân chủ và giàu mạnh, và góp phần xứng đáng vào sự nghiệp cách mạng thế giới".
+              <span class="quote-author">— Trích Di chúc Chủ tịch Hồ Chí Minh (1969)</span>
+            </div>
+            <div class="image-frame">
+              <img src="HCM.jpg" 
+                   alt="Chủ tịch Hồ Chí Minh viết Di chúc lịch sử"
+                   onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Ho_Chi_Minh_1969_portrait.jpg/800px-Ho_Chi_Minh_1969_portrait.jpg';">
+              <div class="image-caption">Chủ tịch Hồ Chí Minh tập trung làm việc, viết Di chúc thiêng liêng để lại cho muôn đời con cháu.</div>
+            </div>
+            <p>Di chúc là ngọn đuốc sáng soi đường, là bảo vật quốc gia định hướng cho công cuộc đổi mới, xây dựng đất nước hôm nay và mai sau.</p>
+          </div>
+          <div class="page-footer">
+            <span>Di Sản Vô Giá Muôn Đời</span>
+            <span>Trang 16 / 18</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SHEET 9: FRONT = Trang 17, BACK = Trang 18 -->
+      <div class="sheet" id="sheet9" style="z-index: 2;">
+        <!-- TRANG 17: TỔNG KẾT -->
+        <div class="page front">
+          <div class="drag-corner-handle drag-corner-right" onmousedown="startDragTurn(event, 'next')" ontouchstart="startDragTurn(event, 'next')"></div>
+          <div class="header-decor">
+            <span class="meta-tag">HCM202 • Tổng Kết Khoa Học & Thực Tiễn</span>
+            <h2 class="page-title">Giá Trị Thời Đại Của Tư Tưởng</h2>
+          </div>
+          <div class="content-body">
+            <p>Tiến trình 5 thời kỳ hình thành và phát triển Tư tưởng Hồ Chí Minh là một hệ thống lý luận hoàn chỉnh, sáng tạo và sống động:</p>
+            <ul class="bullet-list">
+              <li>Là sự kết tinh tinh hoa văn hóa dân tộc Việt Nam với trí tuệ thời đại và chủ nghĩa Mác - Lênin.</li>
+              <li>Giải quyết thắng lợi cuộc khủng hoảng về đường lối cứu nước kéo dài suốt nhiều thập kỷ đầu thế kỷ XX.</li>
+              <li>Dẫn dắt dân tộc ta giành độc lập dân tộc, đánh bại các đế quốc to lớn, thống nhất non sông về một mối.</li>
+            </ul>
+            <div class="image-frame">
+              <img src="image_26.jpeg" 
+                   alt="Việt Nam Hồ Chí Minh - 19.5"
+                   onerror="this.onerror=null; this.src='HCM.jpg';">
+              <div class="image-caption">Việt Nam Hồ Chí Minh - 19.5 (1890–2026).</div>
+            </div>
+            <p>Tư tưởng Hồ Chí Minh mãi mãi là kim chỉ nam, là tài sản tinh thần vô giá đưa đất nước ta vững bước tiến vào kỷ nguyên phồn vinh, hạnh phúc.</p>
+          </div>
+          <div class="page-footer">
+            <span>Kim Chỉ Nam Cách Mạng</span>
+            <span>Trang 17 / 18</span>
+          </div>
+        </div>
+
+        <!-- TRANG 18: BÌA SAU -->
+        <div class="page back cover-back">
+          <div class="cover-spine-back">
+             <span class="cover-spine-text" style="transform: rotate(0deg);">Tư Tưởng Hồ Chí Minh</span>
+          </div>
+          <div class="drag-corner-handle drag-corner-left" onmousedown="startDragTurn(event, 'prev')" ontouchstart="startDragTurn(event, 'prev')"></div>
+          <span class="cover-badge-top" style="margin-bottom: 6px;">KẾT THÚC CHUYÊN ĐỀ HCM202</span>
+          <svg class="cover-emblem" viewBox="0 0 100 100" style="width: 50px; height: 50px; margin-bottom: 10px;">
+            <polygon points="50,5 64,36 98,36 70,57 81,91 50,70 19,91 30,57 2,36 36,36" fill="#FFD700"/>
+          </svg>
+          <h3 style="font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 800; color: #fff2b2; margin-bottom: 12px; letter-spacing: 1px; line-height: 1.35;">
+            ĐỜI ĐỜI NHỚ ƠN<br>CHỦ TỊCH HỒ CHÍ MINH VĨ ĐẠI
+          </h3>
+          <p style="font-size: 11.5px; line-height: 1.6; max-width: 280px; color: #eed4a0; font-style: italic;">
+            "Sách lược dĩ bất biến ứng vạn biến, tinh thần không có gì quý hơn độc lập tự do và bản Di chúc lịch sử sẽ mãi là kim chỉ nam cho muôn đời con cháu mai sau."
+          </p>
+          <div style="margin-top: 15px; font-size: 10px; letter-spacing: 1.5px; color: #dfb15b; font-family: 'Cinzel', serif;">
+            TRANG 18 / 18 • HOÀN THÀNH ẤN PHẨM HCM202
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<!-- BOTTOM BAR -->
+<footer class="bottom-bar">
+  <div class="bottom-left">
+    <div class="page-counter-badge" id="bottomPageCounter">Trang 1 / 18</div>
+    <div class="btn-saved-badge" id="bottomSavedBadge" onclick="toggleSidebar()">
+      <span>🔖</span>
+      <span id="savedCountText">Đã lưu (1)</span>
+    </div>
+  </div>
+
+  <div class="bottom-center">
+    <span>Chuyển nhanh:</span>
+    <input type="range" class="slider-quick-turn" id="pageSlider" min="0" max="9" value="0" oninput="onSliderChange(this.value)">
+  </div>
+
+  <div class="bottom-right">
+    <div class="swipe-tip">
+      <span>✨</span> Cầm góc trang để vuốt lật
+    </div>
+    <div class="ai-mascot-avatar" title="Nhấp để hỏi Trợ lý AI" onclick="toggleAIChat()">🤖</div>
+  </div>
+</footer>
+
+<!-- SIDEBAR MỤC LỤC -->
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
+<div class="sidebar-drawer" id="sidebarDrawer">
+  <div class="sidebar-header">
+    <div class="sidebar-title">
+      <span>☰</span>
+      <span>Mục lục 5 Mốc Phát Triển</span>
+    </div>
+    <button class="sidebar-close-btn" onclick="toggleSidebar()">✕</button>
+  </div>
+
+  <div class="sidebar-content">
+    <div class="saved-pages-box">
+      <div class="saved-box-header">
+        <span>🔖</span> TRANG BẠN ĐÃ ĐÁNH DẤU (<span id="savedNumDisplay">1</span>)
+      </div>
+      <div class="saved-pill-list" id="savedPillList">
+        <button class="saved-tag-pill" onclick="jumpToPageNumber(1)">Trang 1</button>
+      </div>
     </div>
 
-    <!-- Khu vực hiển thị sách -->
-    <div class="main-workspace">
-        <div id="flipbook-container">
-            
-            <!-- BÌA TRƯỚC -->
-            <div class="page page-cover">
-                <div class="page-content" style="justify-content: center; align-items: center;">
-                    <h3>DỰ ÁN HỌC TẬP</h3>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Flag_of_the_Communist_Party_of_Vietnam.svg/320px-Flag_of_the_Communist_Party_of_Vietnam.svg.png" style="width: 100px; margin: 20px 0;">
-                    <h1>BẢN ĐỒ HÌNH THÀNH<br>TƯ TƯỞNG HỒ CHÍ MINH</h1>
-                    <div class="badge">PHIÊN BẢN 3D TƯƠNG TÁC</div>
-                </div>
-            </div>
+    <div class="drawer-section-title">CHỌN NHANH 5 THỜI KỲ (MỞ NGAY TRANG ĐẦU):</div>
+    <div class="chapter-list" id="chapterList"></div>
+  </div>
+</div>
 
-            <!-- MẶT SAU BÌA (Trang lót) -->
-            <div class="page">
-                <div class="page-content" style="display: flex; justify-content: center; align-items: center; opacity: 0.1;">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Flag_of_the_Communist_Party_of_Vietnam.svg/320px-Flag_of_the_Communist_Party_of_Vietnam.svg.png" width="200">
-                </div>
-            </div>
-
-            <!-- TRANG 1 -->
-            <div class="page">
-                <div class="page-content">
-                    <h2>1. Khởi nguồn (Trước 1911)</h2>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Lotus_flower_in_the_pond.jpg/800px-Lotus_flower_in_the_pond.jpg" class="page-img-full" alt="Quê hương">
-                    <p><strong>Hình thành tư tưởng yêu nước:</strong></p>
-                    <ul>
-                        <li>Tiếp thu truyền thống yêu nước bất khuất từ quê hương Nghệ An và gia đình.</li>
-                        <li>Chứng kiến nỗi khổ của nhân dân dưới ách thực dân.</li>
-                        <li>Sớm nhận ra hạn chế trong con đường cứu nước của các sĩ phu đi trước.</li>
-                    </ul>
-                </div>
-                <div class="page-number">Trang 1</div>
-            </div>
-
-            <!-- TRANG 2 -->
-            <div class="page">
-                <div class="page-content">
-                    <h2>2. Khám phá (1911 - 1920)</h2>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Messageries_Maritimes_Saigon.jpg/800px-Messageries_Maritimes_Saigon.jpg" class="page-img-float" alt="Bến Nhà Rồng">
-                    <p><strong>Tìm thấy ánh sáng thời đại:</strong></p>
-                    <ul>
-                        <li><strong>1911:</strong> Rời bến Nhà Rồng trên con tàu Amiral Latouche-Tréville để đi sang phương Tây.</li>
-                        <li>Khảo sát thực tiễn phong trào công nhân qua nhiều châu lục.</li>
-                        <li><strong>Tháng 7/1920:</strong> Đọc <em>Sơ thảo lần thứ nhất những luận cương về vấn đề dân tộc và vấn đề thuộc địa</em> của V.I.Lênin, tìm thấy con đường cách mạng vô sản.</li>
-                    </ul>
-                </div>
-                <div class="page-number">Trang 2</div>
-            </div>
-
-            <!-- TRANG 3 -->
-            <div class="page">
-                <div class="page-content">
-                    <h2>3. Định hình (1921 - 1930)</h2>
-                    <p><strong>Hình thành cơ bản Tư tưởng Hồ Chí Minh:</strong></p>
-                    <ul>
-                        <li>Truyền bá chủ nghĩa Mác - Lênin về nước qua báo chí.</li>
-                        <li><strong>1927:</strong> Xuất bản cuốn <strong>Đường Kách mệnh</strong> chuẩn bị nền tảng lý luận.</li>
-                        <li><strong>Đầu năm 1930:</strong> Chủ trì Hội nghị hợp nhất, thành lập Đảng Cộng sản Việt Nam và thông qua Cương lĩnh chính trị đầu tiên.</li>
-                    </ul>
-                </div>
-                <div class="page-number">Trang 3</div>
-            </div>
-
-            <!-- TRANG 4 -->
-            <div class="page">
-                <div class="page-content">
-                    <h2>4. Thử thách (1930 - 1945)</h2>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Ho_Chi_Minh_1946.jpg/800px-Ho_Chi_Minh_1946.jpg" class="page-img-full" style="height: 180px; object-position: top;" alt="Bác Hồ">
-                    <ul>
-                        <li>Kiên định giữ vững lập trường giải phóng dân tộc trước các quan điểm tả khuynh.</li>
-                        <li><strong>1941:</strong> Trở về nước trực tiếp lãnh đạo, đặt nhiệm vụ giải phóng dân tộc lên hàng đầu.</li>
-                        <li><strong>1945:</strong> Lãnh đạo Cách mạng Tháng Tám thành công, khai sinh nước Việt Nam Dân chủ Cộng hòa.</li>
-                    </ul>
-                </div>
-                <div class="page-number">Trang 4</div>
-            </div>
-
-            <!-- TRANG 5 -->
-            <div class="page">
-                <div class="page-content">
-                    <h2>5. Hoàn thiện (1945 - 1969)</h2>
-                    <p><strong>Tiếp tục phát triển tư tưởng:</strong></p>
-                    <ul>
-                        <li>Bổ sung lý luận chiến tranh nhân dân trong kháng chiến chống Pháp và chống Mỹ.</li>
-                        <li>Phát triển tư tưởng xây dựng Chủ nghĩa Xã hội ở miền Bắc.</li>
-                        <li>Hoàn thiện lý luận về xây dựng Nhà nước của dân, do dân, vì dân.</li>
-                    </ul>
-                </div>
-                <div class="page-number">Trang 5</div>
-            </div>
-            
-            <!-- TRANG 6 -->
-            <div class="page">
-                <div class="page-content" style="text-align: center; justify-content: center;">
-                    <h2 style="border: none;">THÔNG TIN THỰC HIỆN</h2>
-                    <div style="background: #fff; padding: 20px; border-radius: 10px; border: 1px dashed #b71c1c;">
-                        <p style="text-align: center; font-size: 18px; margin-bottom: 5px;"><strong>Sinh viên thực hiện:</strong> HauPT</p>
-                        <p style="text-align: center; color: #555; margin-top: 0;">Trường Đại học FPT</p>
-                        <p style="text-align: center; font-size: 14px; color: #888;">Môn học: Tư tưởng Hồ Chí Minh (HCM101)</p>
-                    </div>
-                </div>
-                <div class="page-number">Trang 6</div>
-            </div>
-
-            <!-- BÌA SAU -->
-            <div class="page page-cover">
-                <div class="page-content" style="justify-content: center;">
-                    <h2>HẾT</h2>
-                    <p style="color: #ffd700; padding: 20px; border-top: 1px solid #ffd700; margin-top: 20px;">Tư tưởng Hồ Chí Minh là tài sản tinh thần vô giá, ngọn đuốc soi đường cho cách mạng Việt Nam.</p>
-                </div>
-            </div>
-
-        </div>
+<!-- CỬA SỔ TRỢ LÝ AI -->
+<div class="ai-backdrop" id="aiBackdrop" onclick="toggleAIChat()"></div>
+<div class="ai-drawer" id="aiDrawer">
+  <div class="ai-header">
+    <div class="ai-title">
+      <span>🤖</span> Trợ lý Học tập AI - HCM202
     </div>
+    <button class="sidebar-close-btn" onclick="toggleAIChat()">✕</button>
+  </div>
 
-    <!-- AI Chat Widget -->
-    <div class="ai-chat-btn" onclick="toggleChat()" title="Chat với AI Tutor">🤖</div>
+  <div class="ai-apikey-bar">
+    <input type="password" class="ai-apikey-input" id="apiKeyInput" placeholder="Nhập mã kích hoạt AI (API Key)...">
+    <button class="ai-apikey-btn" onclick="saveGeminiKey()">Kích hoạt</button>
+  </div>
+
+  <div class="ai-chat-box" id="aiChatBox">
+    <div class="chat-msg bot">
+Xin chào! Tôi là Trợ lý AI chuyên trách bộ môn Tư tưởng Hồ Chí Minh (HCM202).
+
+Tôi có thể giải đáp đầy đủ chi tiết cho bạn về 5 thời kỳ hình thành tư tưởng (từ trước 1911 đến năm 1969), phong trào chống thuế 1908, Luận cương Lênin 1920, Cương lĩnh 1930, Hội nghị TƯ 8 năm 1941, cũng như bản Di chúc lịch sử. Bạn muốn tìm hiểu nội dung nào?
+    </div>
+  </div>
+  <div class="ai-footer">
+    <input type="text" class="ai-input" id="aiInput" placeholder="Nhập câu hỏi của bạn tại đây..." onkeydown="if(event.key==='Enter') sendAIMessage()">
+    <button class="ai-send-btn" onclick="sendAIMessage()">➤</button>
+  </div>
+</div>
+
+<script>
+  let currentSheet = 0;
+  const totalSheets = 9;
+  const totalPages = 18;
+  const sheets = [];
+  for (let i = 1; i <= totalSheets; i++) {
+    sheets.push(document.getElementById(`sheet${i}`));
+  }
+
+  const book = document.getElementById('book');
+  const bookViewport = document.getElementById('bookViewport');
+  const bookRibbon = document.getElementById('bookRibbon');
+  const bottomPageCounter = document.getElementById('bottomPageCounter');
+  const pageSlider = document.getElementById('pageSlider');
+  const sidePrevBtn = document.getElementById('sidePrevBtn');
+  const sideNextBtn = document.getElementById('sideNextBtn');
+  const bookmarkBtnText = document.getElementById('bookmarkBtnText');
+  const savedCountText = document.getElementById('savedCountText');
+  const savedNumDisplay = document.getElementById('savedNumDisplay');
+  const savedPillList = document.getElementById('savedPillList');
+  const chapterList = document.getElementById('chapterList');
+
+  const mainMilestones = [
+    { 
+      id: 1, 
+      label: "Mốc 1", 
+      targetPage: 4, 
+      endPage: 6,
+      title: "Thời kỳ trước 05/06/1911: Hình thành tư tưởng yêu nước và chí hướng cứu nước mới" 
+    },
+    { 
+      id: 2, 
+      label: "Mốc 2", 
+      targetPage: 7, 
+      endPage: 8,
+      title: "Thời kỳ 1911 – 1920: Tìm thấy con đường cứu nước, giải phóng dân tộc theo con đường vô sản" 
+    },
+    { 
+      id: 3, 
+      label: "Mốc 3", 
+      targetPage: 9, 
+      endPage: 10,
+      title: "Thời kỳ 1920 – 1930: Hình thành những nội dung cơ bản tư tưởng về cách mạng Việt Nam" 
+    },
+    { 
+      id: 4, 
+      label: "Mốc 4", 
+      targetPage: 11, 
+      endPage: 12,
+      title: "Thời kỳ 1930 – 1941: Vượt qua thử thách, giữ vững đường lối cách mạng đúng đắn, sáng tạo" 
+    },
+    { 
+      id: 5, 
+      label: "Mốc 5", 
+      targetPage: 13, 
+      endPage: 16,
+      title: "Thời kỳ 1941 – 1969: Tư tưởng Hồ Chí Minh tiếp tục phát triển, soi đường cho cách mạng" 
+    }
+  ];
+
+  const bookmarkedPages = new Set([1]);
+
+  function mapPageToSheet(page) {
+    if (page <= 1) return 0;
+    if (page >= 18) return 9;
+    return Math.floor(page / 2);
+  }
+
+  function jumpToPageNumber(page) {
+    jumpToSheet(mapPageToSheet(page));
+  }
+
+  function renderTOC() {
+    chapterList.innerHTML = '';
     
-    <div class="ai-chat-window" id="chatWindow">
-        <div class="chat-header">
-            <span>AI Tutor Môn HCM101</span>
-            <span style="cursor:pointer; padding: 0 5px;" onclick="toggleChat()">✖</span>
-        </div>
-        <div class="chat-body">
-            <div class="ai-msg">Chào bạn! Mình là trợ giảng AI. Bạn cần tôi hỗ trợ giải đáp hay tóm tắt nội dung nào không?</div>
-        </div>
-        <div class="chat-input">
-            <input type="text" placeholder="Nhập câu hỏi...">
-            <button>Gửi</button>
-        </div>
-    </div>
+    const vidBtn = document.createElement('div');
+    vidBtn.className = `toc-item ${currentSheet === 0 ? 'active' : ''}`;
+    vidBtn.onclick = () => {
+      jumpToPageNumber(2);
+      toggleSidebar();
+    };
+    vidBtn.innerHTML = `
+      <span class="num-badge">🎬</span>
+      <div class="item-text">
+        <div style="font-size:11px; opacity:0.8; margin-bottom:2px;">Video Mở Đầu (Trang 2)</div>
+        <div>Hành trình 30 năm bôn ba cứu nước của Người</div>
+      </div>
+    `;
+    chapterList.appendChild(vidBtn);
 
-    <!-- Thư viện StPageFlip -->
-    <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.js"></script>
+    const mapBtn = document.createElement('div');
+    mapBtn.className = `toc-item ${currentSheet === 1 ? 'active' : ''}`;
+    mapBtn.onclick = () => {
+      jumpToPageNumber(3);
+      toggleSidebar();
+    };
+    mapBtn.innerHTML = `
+      <span class="num-badge">🗺️</span>
+      <div class="item-text">
+        <div style="font-size:11px; opacity:0.8; margin-bottom:2px;">Sơ Đồ Bản Đồ (Trang 3)</div>
+        <div>Bản Đồ 5 Thời Kỳ Phát Triển Tư Tưởng</div>
+      </div>
+    `;
+    chapterList.appendChild(mapBtn);
+
+    mainMilestones.forEach((item) => {
+      const curLeftP = currentSheet * 2;
+      const curRightP = curLeftP + 1;
+      const isCurrent = (curLeftP >= item.targetPage && curLeftP <= item.endPage) ||
+                        (curRightP >= item.targetPage && curRightP <= item.endPage);
+
+      const div = document.createElement('div');
+      div.className = `toc-item ${isCurrent ? 'active' : ''}`;
+      div.onclick = () => {
+        jumpToPageNumber(item.targetPage);
+        toggleSidebar();
+      };
+
+      div.innerHTML = `
+        <span class="num-badge">${item.id}</span>
+        <div class="item-text">
+          <div style="font-size:11px; opacity:0.8; margin-bottom:2px;">${item.label} (Trang ${item.targetPage} - ${item.endPage})</div>
+          <div>${item.title}</div>
+        </div>
+      `;
+      chapterList.appendChild(div);
+    });
+  }
+
+  function renderSavedPills() {
+    savedPillList.innerHTML = '';
+    const sorted = Array.from(bookmarkedPages).sort((a,b) => a-b);
+    savedNumDisplay.textContent = sorted.length;
+    savedCountText.textContent = `Đã lưu (${sorted.length})`;
+
+    sorted.forEach(p => {
+      const btn = document.createElement('button');
+      btn.className = 'saved-tag-pill';
+      btn.textContent = `Trang ${p}`;
+      btn.onclick = () => {
+        jumpToPageNumber(p);
+        toggleSidebar();
+      };
+      savedPillList.appendChild(btn);
+    });
+  }
+
+  function updateBookState() {
+    if (currentSheet === 0) {
+      book.className = 'book closed-start';
+      bottomPageCounter.textContent = 'Trang 1 / 18';
+      sidePrevBtn.disabled = true;
+      sideNextBtn.disabled = false;
+      pageSlider.value = 0;
+      bookRibbon.style.left = '75%';
+    } else if (currentSheet === totalSheets) {
+      book.className = 'book closed-end';
+      bottomPageCounter.textContent = 'Trang 18 / 18';
+      sidePrevBtn.disabled = false;
+      sideNextBtn.disabled = true;
+      pageSlider.value = totalSheets;
+      bookRibbon.style.left = '25%';
+    } else {
+      book.className = 'book opened';
+      const leftPage = currentSheet * 2;
+      const rightPage = leftPage + 1;
+      bottomPageCounter.textContent = `Trang ${leftPage} - ${rightPage} / 18`;
+      sidePrevBtn.disabled = false;
+      sideNextBtn.disabled = false;
+      pageSlider.value = currentSheet;
+      bookRibbon.style.left = '75%';
+    }
+
+    const curP = currentSheet === 0 ? 1 : (currentSheet === totalSheets ? 18 : currentSheet * 2);
+    bookmarkBtnText.textContent = bookmarkedPages.has(curP) ? 'Đã lưu' : 'Lưu trang';
+
+    renderTOC();
+    renderSavedPills();
+  }
+
+  function turnNext() {
+    if (currentSheet < totalSheets) {
+      const targetSheet = sheets[currentSheet];
+      targetSheet.classList.remove('dragging');
+      targetSheet.classList.add('flipped');
+      targetSheet.style.transform = '';
+      targetSheet.style.zIndex = currentSheet + 1;
+      currentSheet++;
+      updateBookState();
+    }
+  }
+
+  function turnPrev() {
+    if (currentSheet > 0) {
+      currentSheet--;
+      const targetSheet = sheets[currentSheet];
+      targetSheet.classList.remove('dragging');
+      targetSheet.classList.remove('flipped');
+      targetSheet.style.transform = '';
+      targetSheet.style.zIndex = totalSheets - currentSheet + 1;
+      updateBookState();
+    }
+  }
+
+  function jumpToSheet(targetSheet) {
+    if (targetSheet > currentSheet) {
+      while (currentSheet < targetSheet) {
+        sheets[currentSheet].classList.remove('dragging');
+        sheets[currentSheet].classList.add('flipped');
+        sheets[currentSheet].style.transform = '';
+        sheets[currentSheet].style.zIndex = currentSheet + 1;
+        currentSheet++;
+      }
+    } else if (targetSheet < currentSheet) {
+      while (currentSheet > targetSheet) {
+        currentSheet--;
+        sheets[currentSheet].classList.remove('dragging');
+        sheets[currentSheet].classList.remove('flipped');
+        sheets[currentSheet].style.transform = '';
+        sheets[currentSheet].style.zIndex = totalSheets - currentSheet + 1;
+      }
+    }
+    updateBookState();
+  }
+
+  function onSliderChange(val) {
+    jumpToSheet(parseInt(val, 10));
+  }
+
+  function toggleBookmarkCurrent() {
+    const curP = currentSheet === 0 ? 1 : (currentSheet === totalSheets ? 18 : currentSheet * 2);
+    if (bookmarkedPages.has(curP)) {
+      bookmarkedPages.delete(curP);
+    } else {
+      bookmarkedPages.add(curP);
+    }
+    updateBookState();
+  }
+
+  function toggleSidebar() {
+    document.getElementById('sidebarDrawer').classList.toggle('open');
+    document.getElementById('sidebarBackdrop').classList.toggle('show');
+  }
+
+  /* KÉO VUỐT TRANG */
+  let isDragging = false;
+  let dragDirection = null;
+  let dragStartX = 0;
+  let activeSheetElement = null;
+  let currentDragAngle = 0;
+
+  function getClientX(e) {
+    return e.touches && e.touches.length > 0 ? e.touches[0].clientX : e.clientX;
+  }
+
+  function startDragTurn(e, direction) {
+    e.stopPropagation();
+    if (direction === 'next' && currentSheet >= totalSheets) return;
+    if (direction === 'prev' && currentSheet <= 0) return;
+
+    isDragging = true;
+    dragDirection = direction;
+    dragStartX = getClientX(e);
+
+    activeSheetElement = (direction === 'next') ? sheets[currentSheet] : sheets[currentSheet - 1];
+    activeSheetElement.style.zIndex = 999;
+    activeSheetElement.classList.add('dragging');
+  }
+
+  function onPointerMove(e) {
+    if (!isDragging || !activeSheetElement) return;
+    const clientX = getClientX(e);
+    const deltaX = clientX - dragStartX;
+    const halfWidth = 410;
+
+    if (dragDirection === 'next') {
+      let progress = Math.max(0, Math.min(1.1, -deltaX / halfWidth));
+      currentDragAngle = -progress * 180;
+      activeSheetElement.style.transform = `rotateY(${currentDragAngle}deg)`;
+    } else if (dragDirection === 'prev') {
+      let progress = Math.max(0, Math.min(1.1, deltaX / halfWidth));
+      currentDragAngle = -180 + (progress * 180);
+      activeSheetElement.style.transform = `rotateY(${currentDragAngle}deg)`;
+    }
+  }
+
+  function onPointerEnd() {
+    if (!isDragging || !activeSheetElement) return;
+    isDragging = false;
+    activeSheetElement.classList.remove('dragging');
+
+    if (dragDirection === 'next') {
+      if (currentDragAngle <= -60) {
+        turnNext();
+      } else {
+        activeSheetElement.style.transform = 'rotateY(0deg)';
+        activeSheetElement.style.zIndex = currentSheet + 1;
+      }
+    } else if (dragDirection === 'prev') {
+      if (currentDragAngle >= -120) {
+        turnPrev();
+      } else {
+        activeSheetElement.style.transform = 'rotateY(-180deg)';
+        activeSheetElement.style.zIndex = totalSheets - currentSheet + 1;
+      }
+    }
+    dragDirection = null;
+    activeSheetElement = null;
+  }
+
+  window.addEventListener('mousemove', onPointerMove);
+  window.addEventListener('touchmove', onPointerMove, { passive: false });
+  window.addEventListener('mouseup', onPointerEnd);
+  window.addEventListener('touchend', onPointerEnd);
+
+  /* HIỆU ỨNG PARALLAX */
+  const stage = document.getElementById('stageContainer');
+  let targetTiltX = 0, targetTiltY = 0, currentTiltX = 0, currentTiltY = 0;
+
+  stage.addEventListener('mousemove', (e) => {
+    if (isDragging) return;
+    const rect = stage.getBoundingClientRect();
+    targetTiltY = ((e.clientX - rect.left - rect.width / 2) / (rect.width / 2)) * 8;
+    targetTiltX = -((e.clientY - rect.top - rect.height / 2) / (rect.height / 2)) * 7;
+  });
+
+  stage.addEventListener('mouseleave', () => {
+    targetTiltX = 0;
+    targetTiltY = 0;
+  });
+
+  function animateParallax() {
+    if (!isDragging) {
+      currentTiltX += (targetTiltX - currentTiltX) * 0.08;
+      currentTiltY += (targetTiltY - currentTiltY) * 0.08;
+      bookViewport.style.transform = `rotateX(${currentTiltX}deg) rotateY(${currentTiltY}deg) translateZ(10px)`;
+    }
+    requestAnimationFrame(animateParallax);
+  }
+  animateParallax();
+
+  /* TỰ ĐỘNG LẬT */
+  let autoFlipInterval = null;
+  function toggleAutoFlip() {
+    const btn = document.getElementById('autoFlipBtn');
+    if (autoFlipInterval) {
+      clearInterval(autoFlipInterval);
+      autoFlipInterval = null;
+      btn.textContent = 'Tự lật trang: TẮT';
+      btn.style.background = 'linear-gradient(135deg, #d9531e, #b83d10)';
+    } else {
+      btn.textContent = 'Tự lật trang: BẬT';
+      btn.style.background = 'linear-gradient(135deg, #16a34a, #15803d)';
+      autoFlipInterval = setInterval(() => {
+        if (currentSheet < totalSheets) turnNext();
+        else toggleAutoFlip();
+      }, 4000);
+    }
+  }
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else if (document.exitFullscreen) document.exitFullscreen();
+  }
+
+  /* GIỌNG ĐỌC TIẾNG VIỆT */
+  let voices = [];
+  function updateVoices() {
+    if ('speechSynthesis' in window) {
+      voices = window.speechSynthesis.getVoices();
+    }
+  }
+  updateVoices();
+  if ('speechSynthesis' in window && window.speechSynthesis.onvoiceschanged !== undefined) {
+    window.speechSynthesis.onvoiceschanged = updateVoices;
+  }
+
+  function getBestVietnameseVoice() {
+    if (!voices.length && 'speechSynthesis' in window) {
+      voices = window.speechSynthesis.getVoices();
+    }
+    let matched = voices.find(v => v.lang.includes('vi') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('HoaiMy') || v.name.includes('NamMinh')));
+    if (!matched) {
+      matched = voices.find(v => v.lang.startsWith('vi') || v.lang === 'vi-VN' || v.lang === 'vi_VN');
+    }
+    return matched;
+  }
+
+  function speakCurrentPage() {
+    if (!('speechSynthesis' in window)) {
+      alert("Trình duyệt không hỗ trợ Web Speech API!");
+      return;
+    }
+    window.speechSynthesis.cancel();
     
-    <script>
-        const flipbookEl = document.getElementById('flipbook-container');
-        const pageFlip = new St.PageFlip(flipbookEl, {
-            width: 450, height: 600, size: "fixed",
-            minWidth: 450, maxWidth: 450, minHeight: 600, maxHeight: 600,
-            showCover: true, drawShadow: true, usePortrait: false,
+    let textToRead = "";
+    if (currentSheet === 0) {
+      textToRead = "Giáo trình chuẩn HCM202. Bản Đồ Hình Thành Tư Tưởng Hồ Chí Minh. Dĩ bất biến ứng vạn biến. Không có gì quý hơn độc lập tự do.";
+    } else if (currentSheet === totalSheets) {
+      textToRead = "Đời đời nhớ ơn Chủ tịch Hồ Chí Minh vĩ đại.";
+    } else {
+      const leftPageEl = sheets[currentSheet - 1].querySelector('.page.back .content-body');
+      const rightPageEl = sheets[currentSheet].querySelector('.page.front .content-body');
+      textToRead = ((leftPageEl ? leftPageEl.innerText : '') + " " + (rightPageEl ? rightPageEl.innerText : '')).trim();
+    }
+
+    const utterance = new SpeechSynthesisUtterance(textToRead);
+    const vnVoice = getBestVietnameseVoice();
+    if (vnVoice) {
+      utterance.voice = vnVoice;
+      utterance.lang = vnVoice.lang;
+    } else {
+      utterance.lang = 'vi-VN';
+    }
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    window.speechSynthesis.speak(utterance);
+  }
+
+  function toggleMute() {
+    if ('speechSynthesis' in window && window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+    }
+  }
+
+  /* CHATBOT AI HỌC TẬP HCM202 */
+  function toggleAIChat() {
+    document.getElementById('aiDrawer').classList.toggle('open');
+    document.getElementById('aiBackdrop').classList.toggle('show');
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const savedKey = localStorage.getItem('GEMINI_API_KEY');
+    if (savedKey) {
+      document.getElementById('apiKeyInput').value = savedKey;
+    }
+  });
+
+  function saveGeminiKey() {
+    const key = document.getElementById('apiKeyInput').value.trim();
+    if (key) {
+      localStorage.setItem('GEMINI_API_KEY', key);
+      alert("Hệ thống Trợ lý AI đã được kích hoạt thành công!");
+    } else {
+      localStorage.removeItem('GEMINI_API_KEY');
+      alert("Đã hủy kích hoạt, hệ thống sẽ sử dụng cơ sở tri thức mặc định.");
+    }
+  }
+
+  const aiQA = [
+    { keys: ["sinh năm", "ngày sinh", "sinh ngày", "sinh khi nào"], ans: "Chủ tịch Hồ Chí Minh sinh ngày 19 tháng 5 năm 1890 (mất ngày 2 tháng 9 năm 1969)." },
+    { keys: ["quê", "quê quán", "nghệ an", "nam đàn"], ans: "Quê hương Bác ở làng Sen (quê nội) và làng Hoàng Trù (quê ngoại), xã Kim Liên, huyện Nam Đàn, tỉnh Nghệ An." },
+    { keys: ["thời kỳ 1", "trước 1911", "5/6/1911", "mốc 1"], ans: "Thời kỳ 1 (trước 5/6/1911): Hình thành tư tưởng yêu nước và chí hướng tìm đường cứu nước mới. Ảnh hưởng sâu sắc từ quê hương Nghệ An, cụ Phó bảng Nguyễn Sinh Sắc, mẹ Hoàng Thị Loan; tham gia chống thuế 1908 và dạy học tại Dục Thanh 1910." },
+    { keys: ["thời kỳ 2", "1911-1920", "1911 - 1920", "mốc 2"], ans: "Thời kỳ 2 (1911 - 1920): Hình thành tư tưởng cứu nước, giải phóng dân tộc theo con đường vô sản. Khảo sát thực tiễn nhiều nước, gửi Yêu sách của nhân dân An Nam 1919, tiếp cận Luận cương Lênin tháng 7/1920 và bỏ phiếu tán thành Quốc tế 3 tại Đại hội Tours (12/1920)." },
+    { keys: ["thời kỳ 3", "1920-1930", "1921-1930", "mốc 3"], ans: "Thời kỳ 3 (1920 - 1930): Hình thành những nội dung cơ bản tư tưởng về cách mạng Việt Nam. Viết Bản án chế độ thực dân Pháp (1925), Đường cách mệnh (1927), thành lập Hội VN Cách mạng Thanh niên (1925) và sáng lập Đảng với Cương lĩnh đầu tiên (đầu năm 1930)." },
+    { keys: ["thời kỳ 4", "1930-1941", "1930-1945", "mốc 4"], ans: "Thời kỳ 4 (1930 - 1941): Vượt qua thử thách, giữ vững đường lối cách mạng đúng đắn, sáng tạo. Kiên định vượt qua quan điểm tả khuynh của Quốc tế Cộng sản, thoát tù Hồng Kông, về nước 28/1/1941 và chủ trì Hội nghị TƯ 8 (5/1941) tại Pác Bó đặt nhiệm vụ giải phóng dân tộc lên hàng đầu." },
+    { keys: ["thời kỳ 5", "1941-1969", "1945-1969", "mốc 5"], ans: "Thời kỳ 5 (1941 - 1969): Tư tưởng tiếp tục phát triển, soi đường cho sự nghiệp cách mạng. Lãnh đạo CMT8 (1945), Tuyên ngôn Độc lập (2/9/1945), chỉ đạo 'Dĩ bất biến ứng vạn biến', kháng chiến chống Pháp (1946-1954), chân lý 'Không có gì quý hơn độc lập tự do' (1966) và Di chúc lịch sử (1969)." },
+    { keys: ["hội nghị trung ương 8", "hội nghị tư 8", "pác bó 1941"], ans: "Tháng 5-1941 tại Pác Bó, Bác chủ trì Hội nghị TƯ 8: khẳng định quyền lợi giải phóng dân tộc cao hơn hết thảy, tạm gác khẩu hiệu điền địa, thành lập Mặt trận Việt Minh. Đây là sự trở về hoàn toàn với Cương lĩnh 1930." },
+    { keys: ["di chúc", "1969", "mong muốn"], ans: "Bản Di chúc 1969 là tài sản tinh thần vô giá. Điều mong muốn cuối cùng của Người là toàn Đảng, toàn dân ta đoàn kết phấn đấu, xây dựng một nước Việt Nam hòa bình, thống nhất, độc lập, dân chủ và giàu mạnh, và góp phần xứng đáng vào sự nghiệp cách mạng thế giới." }
+  ];
+
+  const conversationHistory = [
+    {
+      role: "user",
+      parts: [{ text: "Bạn là Trợ lý AI học tập chuyên về bộ môn Tư tưởng Hồ Chí Minh (HCM202). Hãy trả lời súc tích, lịch sự, chính xác theo quan điểm lịch sử và 5 thời kỳ trong tài liệu sách." }]
+    },
+    {
+      role: "model",
+      parts: [{ text: "Tôi đã sẵn sàng giải đáp mọi thắc mắc của bạn về 5 thời kỳ hình thành tư tưởng Hồ Chí Minh!" }]
+    }
+  ];
+
+  async function sendAIMessage() {
+    const input = document.getElementById('aiInput');
+    const txt = input.value.trim();
+    if (!txt) return;
+
+    const chatBox = document.getElementById('aiChatBox');
+
+    const userDiv = document.createElement('div');
+    userDiv.className = 'chat-msg user';
+    userDiv.textContent = txt;
+    chatBox.appendChild(userDiv);
+    input.value = '';
+
+    const botDiv = document.createElement('div');
+    botDiv.className = 'chat-msg bot';
+    botDiv.textContent = "Hệ thống AI đang phân tích dữ liệu...";
+    chatBox.appendChild(botDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    const apiKey = localStorage.getItem('GEMINI_API_KEY');
+
+    if (apiKey) {
+      conversationHistory.push({ role: "user", parts: [{ text: txt }] });
+      try {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: conversationHistory,
+            generationConfig: { temperature: 0.6, maxOutputTokens: 600 }
+          })
         });
-
-        pageFlip.loadFromHTML(document.querySelectorAll('.page'));
-
-        document.getElementById('btn-prev').addEventListener('click', () => { pageFlip.flipPrev(); });
-        document.getElementById('btn-next').addEventListener('click', () => { pageFlip.flipNext(); });
-
-        function toggleChat() {
-            const chatWindow = document.getElementById('chatWindow');
-            chatWindow.style.display = (chatWindow.style.display === "flex") ? "none" : "flex";
+        const data = await res.json();
+        if (data.candidates && data.candidates[0].content.parts[0].text) {
+          const reply = data.candidates[0].content.parts[0].text;
+          botDiv.textContent = reply;
+          conversationHistory.push({ role: "model", parts: [{ text: reply }] });
+        } else {
+          botDiv.textContent = "Không nhận được phản hồi từ hệ thống. Vui lòng kiểm tra lại mã kích hoạt!";
         }
-    </script>
+      } catch (e) {
+        console.error(e);
+        botDiv.textContent = "Lỗi kết nối máy chủ tri thức. Đang chuyển sang dữ liệu nội bộ...";
+        fallbackLocalAnswer(txt, botDiv);
+      }
+    } else {
+      setTimeout(() => {
+        fallbackLocalAnswer(txt, botDiv);
+      }, 350);
+    }
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  function fallbackLocalAnswer(txt, botDiv) {
+    const lower = txt.toLowerCase();
+    let reply = "Câu hỏi này liên quan đến nội dung 5 thời kỳ hình thành tư tưởng Hồ Chí Minh. Bạn có thể hỏi về từng thời kỳ (1, 2, 3, 4, 5), Hội nghị TƯ 8 (1941), Cương lĩnh 1930 hoặc bản Di chúc 1969 nhé!";
+    for (const item of aiQA) {
+      if (item.keys.some(k => lower.includes(k))) {
+        reply = item.ans;
+        break;
+      }
+    }
+    botDiv.textContent = reply;
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') turnNext();
+    else if (e.key === 'ArrowLeft') turnPrev();
+  });
+
+  updateBookState();
+</script>
+
 </body>
 </html>
